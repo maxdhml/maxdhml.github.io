@@ -24,8 +24,8 @@ const writeups = [
 
 const projects = [
     {
-        title: "Python Port Scanner",
-        description: "Multi-threaded efficient scanner.",
+        title: "R36S Mp3 Player - Ipod Design",
+        description: "Building an iPod-style MP3 player from scratch on the R36S Linux console.",
         url: "#"
     },
     {
