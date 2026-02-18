@@ -1,24 +1,13 @@
-// Data Configuration
 const writeups = [
     {
-        title: "CDSA Write up path",
-        description: "Learn is important dont copy all",
-        url: "#"
+        title: "TryHackMe CTF Write Ups",
+        description: "Collection of TryHackMe CTF solutions and walkthroughs.",
+        url: "write-ups/TryHackMe CTF Write Ups/index.html"
     },
     {
-        title: "CJCA — Notes & Writeup",
-        description: "Learn is important dont copy all",
-        url: "#"
-    },
-    {
-        title: "IA red teaming Write up path",
-        description: "Learn is important dont copy all",
-        url: "#"
-    },
-    {
-        title: "HackTheBox - Seasonal",
-        description: "Detailed walkthrough of the latest seasonal machine.",
-        url: "#"
+        title: "YesWeHack Write Ups",
+        description: "Bug bounty reports and findings from YesWeHack.",
+        url: "write-ups/YesWeHack Write Ups/index.html"
     }
 ];
 
