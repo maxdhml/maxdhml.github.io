@@ -217,6 +217,12 @@ body {
     display: none !important;
 }
 
+/* Désactiver le surlignage de Google Translate sur les phrases */
+.goog-text-highlight {
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
 footer {
     /* Position is handled by flex layout now */
     margin-top: 0;
