@@ -168,7 +168,7 @@ a {
     padding: 0.5rem 0.75rem;
     border-radius: var(--card-radius);
     margin-top: auto;
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
     font-size: 0.9rem;
     font-weight: 600;
     transition: background-color 0.2s;
@@ -181,6 +181,40 @@ a {
 .btn-download:hover {
     background-color: #0069d9;
     color: white;
+}
+
+.btn-lang {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    background-color: #2a2a2a;
+    color: white;
+    padding: 0.5rem 0.75rem;
+    border-radius: var(--card-radius);
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: background-color 0.2s;
+    width: fit-content;
+    cursor: pointer;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    position: fixed;
+    top: 2rem;
+    right: 2rem;
+    z-index: 9999;
+}
+
+.btn-lang:hover {
+    background-color: #3a3a3a;
+}
+
+/* Fix Google Translate Glitches */
+body {
+    top: 0px !important;
+}
+
+.skiptranslate {
+    display: none !important;
 }
 
 footer {
