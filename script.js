@@ -73,25 +73,43 @@ function toggleLanguage() {
         // Switch back to French (original)
         document.cookie = `googtrans=/fr/fr; path=/;`;
         if (domain) document.cookie = `googtrans=/fr/fr; path=/; domain=${domain}`;
+        if (domain) document.cookie = `googtrans=/fr/fr; path=/; domain=.${domain}`;
     } else {
         // Switch to English
         document.cookie = `googtrans=/fr/en; path=/;`;
         if (domain) document.cookie = `googtrans=/fr/en; path=/; domain=${domain}`;
+        if (domain) document.cookie = `googtrans=/fr/en; path=/; domain=.${domain}`;
     }
 
-    var combo = document.querySelector('.goog-te-combo');
-    if (combo) {
-        combo.value = isEnglish ? 'fr' : 'en';
-        combo.dispatchEvent(new Event('change'));
+    // Helper to apply the language once Google Translate dropdown is available
+    function applyLanguageWhenReady(targetLang) {
+        var attempts = 0;
+        var maxAttempts = 25; // ~5s max (25 * 200ms)
 
-        var btnText = document.getElementById('lang-text');
-        if (btnText) {
-            btnText.innerText = isEnglish ? 'FR' : 'EN';
+        function tryApply() {
+            var combo = document.querySelector('.goog-te-combo');
+            if (combo) {
+                combo.value = targetLang;
+                combo.dispatchEvent(new Event('change'));
+
+                var btnText = document.getElementById('lang-text');
+                if (btnText) {
+                    btnText.innerText = targetLang === 'en' ? 'EN' : 'FR';
+                }
+            } else if (attempts < maxAttempts) {
+                attempts++;
+                setTimeout(tryApply, 200);
+            } else {
+                // As a last resort, reload to force Google Translate to read the cookie
+                window.location.reload();
+            }
         }
-    } else {
-        // Fallback: reload the page to apply the cookie
-        window.location.reload();
+
+        tryApply();
     }
+
+    // Target language is the opposite of current detected language
+    applyLanguageWhenReady(isEnglish ? 'fr' : 'en');
 }
 
 // Append Google Translate script
