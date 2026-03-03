@@ -52,19 +52,15 @@ document.addEventListener('DOMContentLoaded', () => {
     // Language toggle initialization
     var btnText = document.getElementById('lang-text');
     if (btnText) {
+        btnText.classList.add('notranslate');
         var isEnglish = document.cookie.indexOf('googtrans=/fr/en') !== -1 || document.cookie.indexOf('googtrans=/auto/en') !== -1;
         btnText.innerText = isEnglish ? 'EN' : 'FR';
     }
 });
 
 function toggleLanguage() {
-    if (window.location.protocol === 'file:') {
-        alert("La traduction nécessite un serveur HTTP (ex: GitHub Pages ou Live Server) car les navigateurs bloquent les cookies pour les fichiers locaux.");
-        return;
-    }
-
     var isEnglish = document.cookie.indexOf('googtrans=/fr/en') !== -1 || document.cookie.indexOf('googtrans=/auto/en') !== -1;
-    var domain = window.location.hostname;
+    var domain = window.location.hostname || '';
 
     // Clear existing cookies to ensure override
     document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
@@ -82,7 +78,20 @@ function toggleLanguage() {
         document.cookie = `googtrans=/fr/en; path=/;`;
         if (domain) document.cookie = `googtrans=/fr/en; path=/; domain=${domain}`;
     }
-    window.location.reload();
+
+    var combo = document.querySelector('.goog-te-combo');
+    if (combo) {
+        combo.value = isEnglish ? 'fr' : 'en';
+        combo.dispatchEvent(new Event('change'));
+
+        var btnText = document.getElementById('lang-text');
+        if (btnText) {
+            btnText.innerText = isEnglish ? 'FR' : 'EN';
+        }
+    } else {
+        // Fallback: reload the page to apply the cookie
+        window.location.reload();
+    }
 }
 
 // Append Google Translate script
