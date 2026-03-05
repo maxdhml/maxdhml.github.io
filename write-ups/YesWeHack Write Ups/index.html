@@ -4,42 +4,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="maxdhml — Rapports et découvertes bug bounty YesWeHack.">
     <title>maxdhml | YesWeHack Write Ups</title>
+    <link rel="icon" type="image/png" href="../../favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="../../style.css">
 </head>
 
 <body>
-    <button id="lang-toggle" class="btn-lang" onclick="toggleLanguage()">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-            stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="10"></circle>
-            <line x1="2" y1="12" x2="22" y2="12"></line>
-            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z">
-            </path>
-        </svg>
-        <span id="lang-text">FR / EN</span>
+
+    <!-- Lang button fixed top-right -->
+    <button class="btn-lang" onclick="toggleLanguage()">
+        <span data-i18n="btn-lang-label">🇬🇧 EN</span>
     </button>
 
     <div class="container">
-        <!-- Sidebar -->
         <aside class="sidebar">
-            <div class="profile-section">
-                <div class="avatar" style="background-image: url('../../avatar.png')"></div>
-                <div class="profile-name">maxdhml</div>
-                <div class="profile-sub">Portfolio & writeups</div>
+            <div class="sidebar-top">
+                <div class="profile-section">
+                    <div class="avatar" style="background-image: url('../../avatar.png')"></div>
+                    <div>
+                        <div class="profile-name">maxdhml</div>
+                        <div class="profile-sub" data-i18n="profile-sub">Portfolio &amp; writeups</div>
+                    </div>
+                </div>
+                <button id="hamburger-btn" class="btn-hamburger" aria-label="Menu" aria-expanded="false">
+                    <span></span><span></span><span></span>
+                </button>
             </div>
 
-            <nav>
+            <nav id="nav-menu">
                 <ul class="nav-links">
-                    <li><a href="../../index.html" class="active">Write Up</a></li>
-                    <li><a href="../../portfolio.html">Portfolio</a></li>
-                    <li><a href="../../contact.html">Contacts</a></li>
-                    <li><a href="../../about.html">About</a></li>
+                    <li><a href="../../index.html" class="active" data-i18n="nav-writeup">Write Up</a></li>
+                    <li><a href="../../portfolio.html" data-i18n="nav-portfolio">Portfolio</a></li>
+                    <li><a href="../../contact.html" data-i18n="nav-contacts">Contacts</a></li>
+                    <li><a href="../../about.html" data-i18n="nav-about">About</a></li>
                 </ul>
             </nav>
 
             <a href="../../CV Maxime DUHAMEL - Alternance.pdf" download class="btn-download">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                     stroke-linecap="round" stroke-linejoin="round">
                     <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                     <polyline points="7 10 12 15 17 10"></polyline>
@@ -48,28 +53,24 @@
                 CV
             </a>
 
-
-            <footer>
-                &copy; 2026 maxdhml
-            </footer>
+            <footer><span data-i18n="footer">© 2026 maxdhml</span></footer>
         </aside>
 
-        <!-- Main Content -->
         <main class="main-content">
             <section id="writeups">
                 <h2 class="section-title">YesWeHack Write Ups</h2>
                 <ul id="ywh-writeups-list" class="writeup-list">
-                    <!-- Example item, replace with JS or manual items later -->
                     <li class="writeup-card">
-                        <div class="card-title">Coming Soon</div>
-                        <div class="card-desc">Write-ups will be listed here.</div>
+                        <div class="card-content">
+                            <div class="card-title">Coming Soon</div>
+                            <div class="card-desc">Write-ups will be listed here.</div>
+                        </div>
                     </li>
                 </ul>
             </section>
         </main>
     </div>
 
-    <!-- Script to handle interactions if needed, or reuse main script adapted -->
     <script src="../../script.js"></script>
 </body>
 

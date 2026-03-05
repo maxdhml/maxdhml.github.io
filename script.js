@@ -70,15 +70,19 @@ function applyLanguage(lang) {
 }
 
 function toggleLanguage() {
-    applyLanguage(getCurrentLang() === 'fr' ? 'en' : 'fr');
+    const newLang = getCurrentLang() === 'fr' ? 'en' : 'fr';
+    applyLanguage(newLang);
+    // Re-render dynamic cards so descriptions update
+    renderCards(writeups, 'writeups-list');
+    renderCards(projects, 'projects-list');
 }
 
 /* ───────────────────────────────────────────────
    Cards
 ─────────────────────────────────────────────── */
 const writeups = [
-    { title: "TryHackMe CTF Write Ups", descKey: "writeup-desc-thm", url: "write-ups/TryHackMe CTF Write Ups/index.html" },
-    { title: "YesWeHack Write Ups", descKey: "writeup-desc-ywh", url: "write-ups/YesWeHack Write Ups/index.html" }
+    { title: "TryHackMe CTF Write Ups", descKey: "writeup-desc-thm", url: "write-ups/TryHackMe%20CTF%20Write%20Ups/index.html" },
+    { title: "YesWeHack Write Ups", descKey: "writeup-desc-ywh", url: "write-ups/YesWeHack%20Write%20Ups/index.html" }
 ];
 
 const projects = [
@@ -95,10 +99,28 @@ function renderCards(data, containerId) {
     data.forEach(item => {
         const li = document.createElement('li');
         li.className = 'writeup-card';
-        li.onclick = () => window.location.href = item.url;
+        li.setAttribute('role', 'link');
+        li.setAttribute('tabindex', '0');
+        li.setAttribute('aria-label', item.title);
+
+        const navigate = () => {
+            if (item.url === '#') return;
+            window.location.href = item.url;
+        };
+
+        li.addEventListener('click', navigate);
+        li.addEventListener('keydown', e => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                navigate();
+            }
+        });
+
         li.innerHTML = `
-            <div class="card-title">${item.title}</div>
-            <div class="card-desc" data-i18n="${item.descKey}">${t[item.descKey] || ''}</div>
+            <div class="card-content">
+                <div class="card-title">${item.title}</div>
+                <div class="card-desc" data-i18n="${item.descKey}">${t[item.descKey] || ''}</div>
+            </div>
         `;
         container.appendChild(li);
     });
@@ -111,14 +133,35 @@ function initHamburger() {
     const btn = document.getElementById('hamburger-btn');
     const nav = document.getElementById('nav-menu');
     if (!btn || !nav) return;
+
     btn.addEventListener('click', () => {
-        const open = nav.classList.toggle('nav-open');
-        btn.setAttribute('aria-expanded', open);
+        const isOpen = nav.classList.toggle('nav-open');
+        btn.classList.toggle('is-active', isOpen);
+        btn.setAttribute('aria-expanded', String(isOpen));
     });
+
+    // Close menu on link click (mobile)
     nav.querySelectorAll('a').forEach(a => {
         a.addEventListener('click', () => {
             nav.classList.remove('nav-open');
-            btn.setAttribute('aria-expanded', false);
+            btn.classList.remove('is-active');
+            btn.setAttribute('aria-expanded', 'false');
+        });
+    });
+}
+
+/* ───────────────────────────────────────────────
+   Keyboard accessibility for contact cards
+─────────────────────────────────────────────── */
+function initContactCards() {
+    document.querySelectorAll('.writeup-card[onclick]').forEach(card => {
+        card.setAttribute('role', 'link');
+        card.setAttribute('tabindex', '0');
+        card.addEventListener('keydown', e => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                card.click();
+            }
         });
     });
 }
@@ -131,4 +174,5 @@ document.addEventListener('DOMContentLoaded', () => {
     renderCards(writeups, 'writeups-list');
     renderCards(projects, 'projects-list');
     initHamburger();
+    initContactCards();
 });
