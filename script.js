@@ -1,131 +1,134 @@
-const writeups = [
-    {
-        title: "TryHackMe CTF Write Ups",
-        description: "Collection of TryHackMe CTF solutions and walkthroughs.",
-        url: "write-ups/TryHackMe CTF Write Ups/index.html"
+/* ───────────────────────────────────────────────
+   Translations FR / EN
+─────────────────────────────────────────────── */
+const translations = {
+    fr: {
+        "profile-sub": "Portfolio & writeups",
+        "nav-writeup": "Write Up",
+        "nav-portfolio": "Portfolio",
+        "nav-contacts": "Contacts",
+        "nav-about": "About",
+        "section-writeup": "Write Up",
+        "section-portfolio": "Portfolio & Projets",
+        "section-contacts": "Contacts",
+        "section-about": "About Me",
+        "contact-intro": "Vous pouvez me contacter via les plateformes suivantes :",
+        "contact-email-desc": "max.dhml@gmail.com",
+        "contact-linkedin-desc": "Me contacter sur LinkedIn",
+        "contact-github-desc": "Voir mes dépôts",
+        "about-p1": "Étudiant en Réseaux & Télécommunications avec un fort intérêt pour la cybersécurité.",
+        "about-p2": "Focalisé sur la compréhension des systèmes internes et des infrastructures réseau pour améliorer la sécurité.",
+        "about-p3": "Expérimenté avec les environnements Linux, les fondamentaux réseau et les challenges CTF. En développement continu de compétences pratiques à travers des projets concrets.",
+        "writeup-desc-thm": "Collection de solutions et walkthroughs TryHackMe CTF.",
+        "writeup-desc-ywh": "Rapports et découvertes de bug bounty sur YesWeHack.",
+        "project-desc-r36s": "Construction d'un lecteur MP3 style iPod sur la console Linux R36S.",
+        "project-desc-c2": "Framework de Command and Control pour tests.",
+        "btn-lang-label": "🇬🇧 EN",
+        "footer": "© 2026 maxdhml"
     },
-    {
-        title: "YesWeHack Write Ups",
-        description: "Bug bounty reports and findings from YesWeHack.",
-        url: "write-ups/YesWeHack Write Ups/index.html"
+    en: {
+        "profile-sub": "Portfolio & writeups",
+        "nav-writeup": "Write Up",
+        "nav-portfolio": "Portfolio",
+        "nav-contacts": "Contacts",
+        "nav-about": "About",
+        "section-writeup": "Write Up",
+        "section-portfolio": "Portfolio & Projects",
+        "section-contacts": "Contacts",
+        "section-about": "About Me",
+        "contact-intro": "You can reach me through the following platforms:",
+        "contact-email-desc": "max.dhml@gmail.com",
+        "contact-linkedin-desc": "Connect on LinkedIn",
+        "contact-github-desc": "Check my repositories",
+        "about-p1": "Computer Networks & Telecommunications student with a strong interest in cybersecurity.",
+        "about-p2": "Focused on understanding system internals and network infrastructures to improve security.",
+        "about-p3": "Experienced with Linux environments, networking fundamentals, and CTF challenges. Continuously developing practical skills through hands-on projects.",
+        "writeup-desc-thm": "Collection of TryHackMe CTF solutions and walkthroughs.",
+        "writeup-desc-ywh": "Bug bounty reports and findings from YesWeHack.",
+        "project-desc-r36s": "Building an iPod-style MP3 player from scratch on the R36S Linux console.",
+        "project-desc-c2": "Command and Control testing framework.",
+        "btn-lang-label": "🇫🇷 FR",
+        "footer": "© 2026 maxdhml"
     }
+};
+
+/* ───────────────────────────────────────────────
+   Language Engine
+─────────────────────────────────────────────── */
+function getCurrentLang() {
+    return localStorage.getItem('lang') || 'fr';
+}
+
+function applyLanguage(lang) {
+    document.documentElement.lang = lang;
+    localStorage.setItem('lang', lang);
+    const t = translations[lang];
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (t[key] !== undefined) el.textContent = t[key];
+    });
+}
+
+function toggleLanguage() {
+    applyLanguage(getCurrentLang() === 'fr' ? 'en' : 'fr');
+}
+
+/* ───────────────────────────────────────────────
+   Cards
+─────────────────────────────────────────────── */
+const writeups = [
+    { title: "TryHackMe CTF Write Ups", descKey: "writeup-desc-thm", url: "write-ups/TryHackMe CTF Write Ups/index.html" },
+    { title: "YesWeHack Write Ups", descKey: "writeup-desc-ywh", url: "write-ups/YesWeHack Write Ups/index.html" }
 ];
 
 const projects = [
-    {
-        title: "R36S Mp3 Player - Ipod Design",
-        description: "Building an iPod-style MP3 player from scratch on the R36S Linux console.",
-        url: "#"
-    },
-    {
-        title: "Custom C2 Framework",
-        description: "Command and Control testing framework.",
-        url: "#"
-    }
+    { title: "R36S Mp3 Player - Ipod Design", descKey: "project-desc-r36s", url: "#" },
+    { title: "Custom C2 Framework", descKey: "project-desc-c2", url: "#" }
 ];
 
 function renderCards(data, containerId) {
     const container = document.getElementById(containerId);
-    if (!container) return; // Exit if container doesn't exist on this page
-
+    if (!container) return;
+    const lang = getCurrentLang();
+    const t = translations[lang];
     container.innerHTML = '';
-
     data.forEach(item => {
         const li = document.createElement('li');
         li.className = 'writeup-card';
         li.onclick = () => window.location.href = item.url;
-
         li.innerHTML = `
             <div class="card-title">${item.title}</div>
-            <div class="card-desc">${item.description}</div>
+            <div class="card-desc" data-i18n="${item.descKey}">${t[item.descKey] || ''}</div>
         `;
-
         container.appendChild(li);
     });
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    // Only tries to render if the element exists
-    renderCards(writeups, 'writeups-list');
-    renderCards(projects, 'projects-list');
-
-    // Language toggle initialization
-    var btnText = document.getElementById('lang-text');
-    if (btnText) {
-        btnText.classList.add('notranslate');
-        var isEnglish = document.cookie.indexOf('googtrans=/fr/en') !== -1 || document.cookie.indexOf('googtrans=/auto/en') !== -1;
-        btnText.innerText = isEnglish ? 'EN' : 'FR';
-    }
-});
-
-function toggleLanguage() {
-    var isEnglish = document.cookie.indexOf('googtrans=/fr/en') !== -1 || document.cookie.indexOf('googtrans=/auto/en') !== -1;
-    var domain = window.location.hostname || '';
-
-    // Clear existing cookies to ensure override
-    document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
-    if (domain) {
-        document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=${domain}`;
-        document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.${domain}`;
-    }
-
-    if (isEnglish) {
-        // Switch back to French (original)
-        document.cookie = `googtrans=/fr/fr; path=/;`;
-        if (domain) document.cookie = `googtrans=/fr/fr; path=/; domain=${domain}`;
-        if (domain) document.cookie = `googtrans=/fr/fr; path=/; domain=.${domain}`;
-    } else {
-        // Switch to English
-        document.cookie = `googtrans=/fr/en; path=/;`;
-        if (domain) document.cookie = `googtrans=/fr/en; path=/; domain=${domain}`;
-        if (domain) document.cookie = `googtrans=/fr/en; path=/; domain=.${domain}`;
-    }
-
-    // Helper to apply the language once Google Translate dropdown is available
-    function applyLanguageWhenReady(targetLang) {
-        var attempts = 0;
-        var maxAttempts = 25; // ~5s max (25 * 200ms)
-
-        function tryApply() {
-            var combo = document.querySelector('.goog-te-combo');
-            if (combo) {
-                combo.value = targetLang;
-                combo.dispatchEvent(new Event('change'));
-
-                var btnText = document.getElementById('lang-text');
-                if (btnText) {
-                    btnText.innerText = targetLang === 'en' ? 'EN' : 'FR';
-                }
-            } else if (attempts < maxAttempts) {
-                attempts++;
-                setTimeout(tryApply, 200);
-            } else {
-                // As a last resort, reload to force Google Translate to read the cookie
-                window.location.reload();
-            }
-        }
-
-        tryApply();
-    }
-
-    // Target language is the opposite of current detected language
-    applyLanguageWhenReady(isEnglish ? 'fr' : 'en');
+/* ───────────────────────────────────────────────
+   Hamburger menu
+─────────────────────────────────────────────── */
+function initHamburger() {
+    const btn = document.getElementById('hamburger-btn');
+    const nav = document.getElementById('nav-menu');
+    if (!btn || !nav) return;
+    btn.addEventListener('click', () => {
+        const open = nav.classList.toggle('nav-open');
+        btn.setAttribute('aria-expanded', open);
+    });
+    nav.querySelectorAll('a').forEach(a => {
+        a.addEventListener('click', () => {
+            nav.classList.remove('nav-open');
+            btn.setAttribute('aria-expanded', false);
+        });
+    });
 }
 
-// Append Google Translate script
-const gtDiv = document.createElement('div');
-gtDiv.id = 'google_translate_element';
-gtDiv.style.display = 'none';
-document.body.appendChild(gtDiv);
-
-window.googleTranslateElementInit = function () {
-    new google.translate.TranslateElement({
-        pageLanguage: 'fr',
-        includedLanguages: 'en,fr',
-        autoDisplay: false
-    }, 'google_translate_element');
-};
-
-const gtScript = document.createElement('script');
-gtScript.src = "https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
-document.body.appendChild(gtScript);
+/* ───────────────────────────────────────────────
+   Init
+─────────────────────────────────────────────── */
+document.addEventListener('DOMContentLoaded', () => {
+    applyLanguage(getCurrentLang());
+    renderCards(writeups, 'writeups-list');
+    renderCards(projects, 'projects-list');
+    initHamburger();
+});

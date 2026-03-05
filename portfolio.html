@@ -9,58 +9,53 @@
 </head>
 
 <body>
-    <button id="lang-toggle" class="btn-lang" onclick="toggleLanguage()">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-            stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="10"></circle>
-            <line x1="2" y1="12" x2="22" y2="12"></line>
-            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z">
-            </path>
-        </svg>
-        <span id="lang-text">FR / EN</span>
+
+    <!-- Lang button fixed top-right -->
+    <button class="btn-lang" onclick="toggleLanguage()">
+        <span data-i18n="btn-lang-label">🇬🇧 EN</span>
     </button>
 
     <div class="container">
-        <!-- Sidebar -->
         <aside class="sidebar">
-            <div class="profile-section">
-                <div class="avatar" style="background-image: url('avatar.png')"></div>
-                <div class="profile-name">maxdhml</div>
-                <div class="profile-sub">Portfolio & writeups</div>
+            <div class="sidebar-top">
+                <div class="profile-section">
+                    <div class="avatar" style="background-image: url('avatar.png')"></div>
+                    <div>
+                        <div class="profile-name">maxdhml</div>
+                        <div class="profile-sub" data-i18n="profile-sub">Portfolio &amp; writeups</div>
+                    </div>
+                </div>
+                <button id="hamburger-btn" class="btn-hamburger" aria-label="Menu" aria-expanded="false">
+                    <span></span><span></span><span></span>
+                </button>
             </div>
 
-            <nav>
+            <nav id="nav-menu">
                 <ul class="nav-links">
-                    <li><a href="index.html">Write Up</a></li>
-                    <li><a href="portfolio.html" class="active">Portfolio</a></li>
-                    <li><a href="contact.html">Contacts</a></li>
-                    <li><a href="about.html">About</a></li>
+                    <li><a href="index.html" data-i18n="nav-writeup">Write Up</a></li>
+                    <li><a href="portfolio.html" class="active" data-i18n="nav-portfolio">Portfolio</a></li>
+                    <li><a href="contact.html" data-i18n="nav-contacts">Contacts</a></li>
+                    <li><a href="about.html" data-i18n="nav-about">About</a></li>
                 </ul>
             </nav>
 
             <a href="CV Maxime DUHAMEL - Alternance.pdf" download class="btn-download">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                     stroke-linecap="round" stroke-linejoin="round">
                     <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                     <polyline points="7 10 12 15 17 10"></polyline>
                     <line x1="12" y1="15" x2="12" y2="3"></line>
                 </svg>
-                <span class="notranslate">CV</span>
+                CV
             </a>
 
-
-            <footer>
-                &copy; 2026 maxdhml
-            </footer>
+            <footer><span data-i18n="footer">© 2026 maxdhml</span></footer>
         </aside>
 
-        <!-- Main Content -->
         <main class="main-content">
             <section id="projects">
-                <h2 class="section-title">Portfolio & Projects</h2>
-                <ul id="projects-list" class="writeup-list">
-                    <!-- Cards injected by JS -->
-                </ul>
+                <h2 class="section-title" data-i18n="section-portfolio">Portfolio &amp; Projets</h2>
+                <ul id="projects-list" class="writeup-list"></ul>
             </section>
         </main>
     </div>
