@@ -489,15 +489,21 @@ footer {
 ──────────────────────────────────────────── */
 @media (max-width: 768px) {
 
+    /* Stack layout vertically */
+    .container {
+        flex-direction: column;
+    }
+
     /* Sidebar → top bar */
     .sidebar {
         position: relative;
         width: 100%;
         height: auto;
-        padding: 1.1rem 1.25rem 0;
+        padding: 1rem 1.25rem 0;
         border-right: none;
         border-bottom: 1px solid var(--border-subtle);
         overflow: visible;
+        flex-shrink: 0;
     }
 
     .sidebar-top {
@@ -513,13 +519,14 @@ footer {
     #nav-menu {
         max-height: 0;
         overflow: hidden;
-        transition: max-height 0.3s ease, padding 0.3s ease;
+        transition: max-height 0.35s ease, padding 0.35s ease;
         padding: 0;
+        flex: none;
     }
 
     #nav-menu.nav-open {
         max-height: 300px;
-        padding: 1rem 0 0.5rem;
+        padding: 0.75rem 0 0.25rem;
     }
 
     .nav-links {
@@ -529,7 +536,8 @@ footer {
     }
 
     .nav-links a {
-        padding: 0.35rem 0.6rem;
+        padding: 0.4rem 0.75rem;
+        font-size: 0.85rem;
     }
 
     .nav-links a:hover {
@@ -540,20 +548,36 @@ footer {
         display: none;
     }
 
-    /* CV button */
-    .btn-download {
-        margin-top: 0.75rem;
-        margin-bottom: 1rem;
-    }
-
+    /* CV button & footer hidden when menu is closed */
+    .btn-download,
     footer {
-        padding: 0.5rem 0 0.75rem;
+        max-height: 0;
+        overflow: hidden;
+        opacity: 0;
+        margin: 0;
+        padding: 0;
+        transition: max-height 0.3s ease, opacity 0.3s ease, margin 0.3s ease, padding 0.3s ease;
     }
 
-    /* Lang button on mobile */
+    /* Show CV button & footer when nav is open */
+    #nav-menu.nav-open~.btn-download {
+        max-height: 60px;
+        opacity: 1;
+        margin-top: 0.75rem;
+        margin-bottom: 0.5rem;
+        padding: 0.5rem 1rem;
+    }
+
+    #nav-menu.nav-open~footer {
+        max-height: 40px;
+        opacity: 1;
+        padding: 0.25rem 0 0.75rem;
+    }
+
+    /* Lang button on mobile — avoid overlap with hamburger */
     .btn-lang {
         top: 1rem;
-        right: 1rem;
+        right: 4.5rem;
         font-size: 0.78rem;
         padding: 0.3rem 0.6rem;
     }
@@ -563,10 +587,12 @@ footer {
         margin-left: 0;
         padding: 2rem 1.25rem;
         max-width: 100%;
+        width: 100%;
     }
 
     .section-title {
         font-size: 1.2rem;
+        margin-bottom: 1.25rem;
     }
 
     .writeup-card {
@@ -575,6 +601,16 @@ footer {
 
     .writeup-card::after {
         right: 1rem;
+    }
+
+    /* About page adjustments */
+    .about-text {
+        max-width: 100%;
+    }
+
+    /* Contact embed */
+    .profile-embed-card iframe {
+        height: 200px;
     }
 }
 
@@ -590,5 +626,19 @@ footer {
 
     .main-content {
         padding: 1.5rem 1rem;
+    }
+
+    .btn-lang {
+        right: 3.5rem;
+        font-size: 0.72rem;
+        padding: 0.25rem 0.5rem;
+    }
+
+    .card-title {
+        font-size: 0.88rem;
+    }
+
+    .card-desc {
+        font-size: 0.78rem;
     }
 }
