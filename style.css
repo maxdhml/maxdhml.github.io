@@ -85,7 +85,9 @@ a {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 0.5rem;
     margin-bottom: 2.5rem;
+    flex-wrap: nowrap;
 }
 
 .profile-section {
@@ -98,11 +100,15 @@ a {
     width: 48px;
     height: 48px;
     min-width: 48px;
+    min-height: 48px;
     border-radius: 50%;
     background-color: #222;
     background-size: cover;
     background-position: center;
     border: 2px solid rgba(255, 255, 255, 0.08);
+    overflow: hidden;
+    flex-shrink: 0;
+    aspect-ratio: 1;
 }
 
 .profile-name {
@@ -232,7 +238,7 @@ a {
     transform: translateY(-1px);
 }
 
-/* ─── Language Button — fixed top-right ─── */
+/* ─── Language Button ─── */
 .btn-lang {
     position: fixed;
     top: 1.5rem;
@@ -247,7 +253,7 @@ a {
     color: var(--text-secondary);
     padding: 0.4rem 0.85rem;
     border-radius: 8px;
-    font-size: 0.85rem;
+    font-size: 0.82rem;
     font-weight: 600;
     border: 1px solid var(--border-subtle);
     cursor: pointer;
@@ -574,12 +580,13 @@ footer {
         padding: 0.25rem 0 0.75rem;
     }
 
-    /* Lang button on mobile — avoid overlap with hamburger */
+    /* Lang button — flows naturally in sidebar-top on mobile */
     .btn-lang {
-        top: 1rem;
-        right: 4.5rem;
+        position: static;
         font-size: 0.78rem;
         padding: 0.3rem 0.6rem;
+        margin-left: auto;
+        flex-shrink: 0;
     }
 
     /* Main content */
@@ -629,7 +636,6 @@ footer {
     }
 
     .btn-lang {
-        right: 3.5rem;
         font-size: 0.72rem;
         padding: 0.25rem 0.5rem;
     }
