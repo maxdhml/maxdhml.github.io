@@ -87,8 +87,8 @@ function toggleLanguage() {
     const newLang = getCurrentLang() === 'fr' ? 'en' : 'fr';
     applyLanguage(newLang);
     // Re-render dynamic cards so descriptions update
-    renderCards(writeups, 'writeups-list');
-    renderCards(projects, 'projects-list');
+    renderCards(getMergedData(writeups, 'writeups'), 'writeups-list');
+    renderCards(getMergedData(projects, 'projects'), 'projects-list');
 }
 
 /* ───────────────────────────────────────────────
@@ -103,6 +103,30 @@ const projects = [
     { title: "R36S Mp3 Player - Ipod Design", descKey: "project-desc-r36s", url: "#" },
     { title: "Custom C2 Framework", descKey: "project-desc-c2", url: "#" }
 ];
+
+/* ─── Merge localStorage items with hardcoded data ─── */
+function getEditorItems(type) {
+    const key = type === 'writeups' ? 'editor_writeups' : 'editor_projects';
+    try {
+        const items = JSON.parse(localStorage.getItem(key) || '[]');
+        const lang = getCurrentLang();
+        return items
+            .filter(i => i.title && i.title.trim() !== '')
+            .map(i => ({
+                title: i.title,
+                descKey: '__editor__',
+                descDirect: lang === 'fr' ? (i.descFr || i.descEn || '') : (i.descEn || i.descFr || ''),
+                url: 'article.html?type=' + (type === 'writeups' ? 'writeup' : 'project') + '&id=' + i.id,
+            }));
+    } catch {
+        return [];
+    }
+}
+
+function getMergedData(baseData, type) {
+    const editorItems = getEditorItems(type);
+    return [...baseData, ...editorItems];
+}
 
 function renderCards(data, containerId) {
     const container = document.getElementById(containerId);
@@ -130,10 +154,17 @@ function renderCards(data, containerId) {
             }
         });
 
+        // Use direct description for editor items, translation key for hardcoded ones
+        const desc = item.descKey === '__editor__'
+            ? (item.descDirect || '')
+            : (t[item.descKey] || '');
+
+        const descAttr = item.descKey === '__editor__' ? '' : `data-i18n="${item.descKey}"`;
+
         li.innerHTML = `
             <div class="card-content">
                 <div class="card-title">${item.title}</div>
-                <div class="card-desc" data-i18n="${item.descKey}">${t[item.descKey] || ''}</div>
+                <div class="card-desc" ${descAttr}>${desc}</div>
             </div>
         `;
         container.appendChild(li);
@@ -185,8 +216,8 @@ function initContactCards() {
 ─────────────────────────────────────────────── */
 document.addEventListener('DOMContentLoaded', () => {
     applyLanguage(getCurrentLang());
-    renderCards(writeups, 'writeups-list');
-    renderCards(projects, 'projects-list');
+    renderCards(getMergedData(writeups, 'writeups'), 'writeups-list');
+    renderCards(getMergedData(projects, 'projects'), 'projects-list');
     initHamburger();
     initContactCards();
 });

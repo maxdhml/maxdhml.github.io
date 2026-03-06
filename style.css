@@ -440,6 +440,31 @@ footer {
     line-height: 1.5;
 }
 
+/* ─── Article Back Link ─── */
+.article-back {
+    margin-bottom: 1.5rem;
+}
+
+.article-back a {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: color var(--transition);
+}
+
+.article-back a:hover {
+    color: var(--accent);
+}
+
+/* ─── Article Meta ─── */
+.article-meta {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin-bottom: 2rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid var(--border-subtle);
+}
+
 /* ─── About ─── */
 .about-text {
     max-width: 580px;

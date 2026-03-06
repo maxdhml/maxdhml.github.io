@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>maxdhml | Éditeur</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="editor.css">
+    <!-- Quill.js -->
+    <link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet">
+    <!-- Highlight.js for code blocks -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/atom-one-dark.min.css">
+</head>
+
+<body>
+    <!-- ─── Login Screen ─── -->
+    <div id="login-screen" class="login-screen">
+        <div class="login-card">
+            <div class="login-icon">🔒</div>
+            <h1 class="login-title">Admin Panel</h1>
+            <p class="login-subtitle">Accès protégé — entrez votre mot de passe</p>
+            <form id="login-form" autocomplete="off">
+                <div class="login-input-wrap">
+                    <input type="password" id="login-password" placeholder="Mot de passe" autocomplete="off"
+                        spellcheck="false" required>
+                    <button type="submit" class="login-btn">→</button>
+                </div>
+                <div id="login-error" class="login-error" hidden></div>
+                <div id="login-lockout" class="login-lockout" hidden></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ─── Editor App (hidden until auth) ─── -->
+    <div id="editor-app" class="editor-app" hidden>
+        <!-- Top bar -->
+        <header class="editor-header">
+            <div class="editor-header-left">
+                <a href="index.html" class="editor-logo">← maxdhml</a>
+                <span class="editor-badge">Éditeur</span>
+            </div>
+            <div class="editor-header-right">
+                <button id="btn-export" class="editor-btn editor-btn-outline" title="Exporter les données">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="7 10 12 15 17 10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
+                    Export
+                </button>
+                <label class="editor-btn editor-btn-outline" title="Importer des données">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="17 8 12 3 7 8"></polyline>
+                        <line x1="12" y1="3" x2="12" y2="15"></line>
+                    </svg>
+                    Import
+                    <input type="file" id="btn-import" accept=".json" hidden>
+                </label>
+                <button id="btn-logout" class="editor-btn editor-btn-danger" title="Déconnexion">
+                    Déconnexion
+                </button>
+            </div>
+        </header>
+
+        <!-- Main editor layout -->
+        <div class="editor-layout">
+            <!-- Sidebar: list of items -->
+            <aside class="editor-sidebar">
+                <div class="editor-tabs">
+                    <button class="editor-tab active" data-tab="writeups">Write-ups</button>
+                    <button class="editor-tab" data-tab="projects">Projets</button>
+                </div>
+
+                <div id="items-list" class="items-list"></div>
+
+                <button id="btn-add-item" class="editor-btn editor-btn-accent editor-btn-full">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2.5">
+                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                    </svg>
+                    Ajouter
+                </button>
+            </aside>
+
+            <!-- Editor main area -->
+            <main class="editor-main">
+                <!-- Empty state -->
+                <div id="editor-empty" class="editor-empty">
+                    <div class="editor-empty-icon">✍️</div>
+                    <p>Sélectionnez un élément ou créez-en un nouveau</p>
+                </div>
+
+                <!-- Edit form -->
+                <div id="editor-form" class="editor-form" hidden>
+                    <div class="editor-form-header">
+                        <h2 id="editor-form-title">Nouvel article</h2>
+                        <div class="editor-form-actions">
+                            <button id="btn-preview" class="editor-btn editor-btn-outline">Aperçu</button>
+                            <button id="btn-save" class="editor-btn editor-btn-accent">Sauvegarder</button>
+                            <button id="btn-delete" class="editor-btn editor-btn-danger">Supprimer</button>
+                        </div>
+                    </div>
+
+                    <div class="editor-fields">
+                        <div class="field-group">
+                            <label for="field-title">Titre</label>
+                            <input type="text" id="field-title" placeholder="Titre de l'article">
+                        </div>
+
+                        <div class="field-row">
+                            <div class="field-group">
+                                <label for="field-desc-fr">Description (FR)</label>
+                                <input type="text" id="field-desc-fr" placeholder="Description en français">
+                            </div>
+                            <div class="field-group">
+                                <label for="field-desc-en">Description (EN)</label>
+                                <input type="text" id="field-desc-en" placeholder="Description in English">
+                            </div>
+                        </div>
+
+                        <div class="field-row" id="category-row">
+                            <div class="field-group">
+                                <label for="field-category">Catégorie</label>
+                                <select id="field-category">
+                                    <option value="TryHackMe CTF Write Ups">TryHackMe CTF Write Ups</option>
+                                    <option value="YesWeHack Write Ups">YesWeHack Write Ups</option>
+                                    <option value="Other">Autre</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="field-group field-group-editor">
+                            <label>Contenu</label>
+                            <div id="quill-toolbar">
+                                <span class="ql-formats">
+                                    <select class="ql-header">
+                                        <option value="1">Titre 1</option>
+                                        <option value="2">Titre 2</option>
+                                        <option value="3">Titre 3</option>
+                                        <option selected>Normal</option>
+                                    </select>
+                                </span>
+                                <span class="ql-formats">
+                                    <button class="ql-bold"></button>
+                                    <button class="ql-italic"></button>
+                                    <button class="ql-underline"></button>
+                                    <button class="ql-strike"></button>
+                                </span>
+                                <span class="ql-formats">
+                                    <button class="ql-code-block"></button>
+                                    <button class="ql-blockquote"></button>
+                                </span>
+                                <span class="ql-formats">
+                                    <button class="ql-list" value="ordered"></button>
+                                    <button class="ql-list" value="bullet"></button>
+                                </span>
+                                <span class="ql-formats">
+                                    <button class="ql-link"></button>
+                                    <button class="ql-image"></button>
+                                </span>
+                                <span class="ql-formats">
+                                    <select class="ql-color"></select>
+                                    <select class="ql-background"></select>
+                                </span>
+                                <span class="ql-formats">
+                                    <button class="ql-clean"></button>
+                                </span>
+                            </div>
+                            <div id="quill-editor"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Preview panel -->
+                <div id="editor-preview" class="editor-preview" hidden>
+                    <div class="editor-form-header">
+                        <h2>Aperçu</h2>
+                        <button id="btn-close-preview" class="editor-btn editor-btn-outline">← Retour à
+                            l'éditeur</button>
+                    </div>
+                    <div id="preview-content" class="article-content"></div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Quill.js -->
+    <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
+    <!-- Highlight.js for code syntax -->
+    <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/lib/highlight.min.js"></script>
+    <!-- Editor script -->
+    <script src="editor.js"></script>
+</body>
+
+</html>
