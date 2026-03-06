@@ -128,6 +128,33 @@ a {
     color: var(--text-secondary);
 }
 
+/* ─── Top Banner ─── */
+.top-banner {
+    background-color: rgba(15, 16, 20, 0.95);
+    color: var(--text-secondary);
+    text-align: center;
+    padding: 0.55rem 1rem;
+    font-size: 0.82rem;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    position: relative;
+    z-index: 100;
+    border-bottom: 1px solid var(--accent);
+}
+
+.top-banner a {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 600;
+    transition: color var(--transition);
+}
+
+.top-banner a:hover {
+    color: var(--accent-hover);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
 /* Hamburger button — hidden on desktop */
 .btn-hamburger {
     display: none;
@@ -246,7 +273,7 @@ a {
 /* ─── Language Button ─── */
 .btn-lang {
     position: fixed;
-    top: 1.5rem;
+    top: 3.5rem;
     right: 1.75rem;
     z-index: 9999;
     display: inline-flex;

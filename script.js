@@ -24,7 +24,8 @@ const translations = {
         "project-desc-r36s": "Construction d'un lecteur MP3 style iPod sur la console Linux R36S.",
         "project-desc-c2": "Framework de Command and Control pour tests.",
         "btn-lang-label": "🇬🇧 EN",
-        "footer": "© 2026 maxdhml"
+        "footer": "© 2026 maxdhml",
+        "banner": "🟢 En recherche d'alternance \u2014 <a href='CV Maxime DUHAMEL - Alternance.pdf' download>voir mon CV</a>"
     },
     en: {
         "profile-sub": "Portfolio & writeups",
@@ -48,7 +49,8 @@ const translations = {
         "project-desc-r36s": "Building an iPod-style MP3 player from scratch on the R36S Linux console.",
         "project-desc-c2": "Command and Control testing framework.",
         "btn-lang-label": "🇫🇷 FR",
-        "footer": "© 2026 maxdhml"
+        "footer": "© 2026 maxdhml",
+        "banner": "🟢 Looking for an apprenticeship \u2014 <a href='CV Maxime DUHAMEL - Alternance.pdf' download>view my CV</a>"
     }
 };
 
@@ -65,7 +67,13 @@ function applyLanguage(lang) {
     const t = translations[lang];
     document.querySelectorAll('[data-i18n]').forEach(el => {
         const key = el.getAttribute('data-i18n');
-        if (t[key] !== undefined) el.textContent = t[key];
+        if (t[key] !== undefined) {
+            if (key === 'banner') {
+                el.innerHTML = t[key];
+            } else {
+                el.textContent = t[key];
+            }
+        }
     });
 }
 
