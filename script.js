@@ -25,7 +25,10 @@ const translations = {
         "project-desc-c2": "Framework de Command and Control pour tests.",
         "btn-lang-label": "🇬🇧 EN",
         "footer": "© 2026 maxdhml",
-        "banner": "🟢 En recherche d'alternance \u2014 <a href='CV Maxime DUHAMEL - Alternance.pdf' download>voir mon CV</a>"
+        "banner": "🟢 En recherche d'alternance \u2014 <a href='CV Maxime DUHAMEL - Alternance.pdf' download>voir mon CV</a>",
+        "section-certifications": "Certifications",
+        "cert-status-progress": "En cours",
+        "cert-status-pending": "En attente"
     },
     en: {
         "profile-sub": "Portfolio & writeups",
@@ -50,7 +53,10 @@ const translations = {
         "project-desc-c2": "Command and Control testing framework.",
         "btn-lang-label": "🇫🇷 FR",
         "footer": "© 2026 maxdhml",
-        "banner": "🟢 Looking for an apprenticeship \u2014 <a href='CV Maxime DUHAMEL - Alternance.pdf' download>view my CV</a>"
+        "banner": "🟢 Looking for an apprenticeship \u2014 <a href='CV Maxime DUHAMEL - Alternance.pdf' download>view my CV</a>",
+        "section-certifications": "Certifications",
+        "cert-status-progress": "In progress",
+        "cert-status-pending": "Pending"
     }
 };
 
