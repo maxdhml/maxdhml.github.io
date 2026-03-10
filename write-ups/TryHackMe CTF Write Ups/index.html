@@ -60,11 +60,11 @@
         <main class="main-content">
             <section id="writeups">
                 <h2 class="section-title">TryHackMe CTF Write Ups</h2>
-                <ul id="thm-writeups-list" class="writeup-list">
+                <ul id="articles-list" class="writeup-list">
                     <li class="writeup-card">
                         <div class="card-content">
-                            <div class="card-title">Coming Soon</div>
-                            <div class="card-desc">Write-ups will be listed here.</div>
+                            <div class="card-title">Chargement…</div>
+                            <div class="card-desc"></div>
                         </div>
                     </li>
                 </ul>
@@ -73,6 +73,44 @@
     </div>
 
     <script src="../../script.js"></script>
+    <script>
+        /* Load articles from articles.json */
+        (function () {
+            fetch('articles.json')
+                .then(r => r.json())
+                .then(articles => {
+                    const list = document.getElementById('articles-list');
+                    if (!articles || articles.length === 0) {
+                        list.innerHTML = `
+                            <li class="writeup-card">
+                                <div class="card-content">
+                                    <div class="card-title">Coming Soon</div>
+                                    <div class="card-desc">Write-ups will be listed here.</div>
+                                </div>
+                            </li>`;
+                        return;
+                    }
+                    list.innerHTML = articles.map(a => `
+                        <li class="writeup-card" role="link" tabindex="0"
+                            onclick="window.location.href='${a.slug}/index.html'">
+                            <div class="card-content">
+                                <div class="card-title">${a.title}</div>
+                                <div class="card-desc">${a.desc || ''}</div>
+                            </div>
+                        </li>
+                    `).join('');
+                })
+                .catch(() => {
+                    document.getElementById('articles-list').innerHTML = `
+                        <li class="writeup-card">
+                            <div class="card-content">
+                                <div class="card-title">Coming Soon</div>
+                                <div class="card-desc">Write-ups will be listed here.</div>
+                            </div>
+                        </li>`;
+                });
+        })();
+    </script>
 </body>
 
 </html>
