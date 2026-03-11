@@ -67,6 +67,40 @@
     </div>
 
     <script src="script.js"></script>
+    <script>
+        /* Also load projects from projects/articles.json */
+        (function () {
+            fetch('projects/articles.json')
+                .then(r => r.json())
+                .then(articles => {
+                    if (!articles || articles.length === 0) return;
+                    const list = document.getElementById('projects-list');
+                    articles.forEach(a => {
+                        const li = document.createElement('li');
+                        li.className = 'writeup-card';
+                        li.setAttribute('role', 'link');
+                        li.setAttribute('tabindex', '0');
+                        li.addEventListener('click', () => {
+                            window.location.href = 'projects/' + a.slug + '/index.html';
+                        });
+                        li.addEventListener('keydown', e => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                                e.preventDefault();
+                                window.location.href = 'projects/' + a.slug + '/index.html';
+                            }
+                        });
+                        li.innerHTML = `
+                            <div class="card-content">
+                                <div class="card-title">${a.title}</div>
+                                <div class="card-desc">${a.desc || ''}</div>
+                            </div>
+                        `;
+                        list.appendChild(li);
+                    });
+                })
+                .catch(() => { /* No articles.json yet, that's fine */ });
+        })();
+    </script>
 </body>
 
 </html>

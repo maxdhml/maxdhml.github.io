@@ -649,6 +649,71 @@ function downloadFile(content, filename) {
     URL.revokeObjectURL(url);
 }
 
+/* ─── Import existing HTML article for editing ─── */
+function importHtmlFile(file) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        try {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(e.target.result, 'text/html');
+
+            // Extract title from the <article> h1 or from <title>
+            const articleEl = doc.querySelector('.article-content') || doc.querySelector('article');
+            if (!articleEl) {
+                showToast('❌ Fichier HTML invalide : aucun contenu article trouvé', 'error');
+                return;
+            }
+
+            const h1 = articleEl.querySelector('h1');
+            const title = h1 ? h1.textContent.trim() : '';
+
+            // Remove h1 and article-meta from content (we store them separately)
+            if (h1) h1.remove();
+            const meta = articleEl.querySelector('.article-meta');
+            if (meta) meta.remove();
+
+            const content = articleEl.innerHTML.trim();
+
+            // Extract description from meta tag
+            const metaDesc = doc.querySelector('meta[name="description"]');
+            let descFr = '';
+            if (metaDesc) {
+                const descContent = metaDesc.getAttribute('content') || '';
+                descFr = descContent.replace(/^maxdhml \u2014 /, '').trim();
+                if (descFr === title) descFr = ''; // Don't duplicate
+            }
+
+            // Create a new item with the imported content
+            const id = Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+            const item = {
+                id,
+                title,
+                descFr,
+                descEn: '',
+                content,
+                createdAt: new Date().toISOString(),
+            };
+
+            if (currentTab === 'writeups') {
+                item.category = document.getElementById('field-category')?.value || 'TryHackMe CTF Write Ups';
+            }
+
+            const items = loadItems(currentTab);
+            items.unshift(item);
+            saveItems(currentTab, items);
+
+            currentItemId = id;
+            renderItemsList();
+            loadItemIntoEditor(id);
+
+            showToast(`✅ Article "${title}" importé ! Modifie-le et ré-exporte.`, 'success');
+        } catch (err) {
+            showToast('❌ Erreur lors de l\'import : ' + err.message, 'error');
+        }
+    };
+    reader.readAsText(file);
+}
+
 /* ─── Export / Import ─── */
 function exportData() {
     const data = {
@@ -781,10 +846,18 @@ document.addEventListener('DOMContentLoaded', () => {
     // Export
     document.getElementById('btn-export').addEventListener('click', exportData);
 
-    // Import
+    // Import JSON
     document.getElementById('btn-import').addEventListener('change', (e) => {
         if (e.target.files.length > 0) {
             importData(e.target.files[0]);
+            e.target.value = '';
+        }
+    });
+
+    // Import HTML article
+    document.getElementById('btn-import-html').addEventListener('change', (e) => {
+        if (e.target.files.length > 0) {
+            importHtmlFile(e.target.files[0]);
             e.target.value = '';
         }
     });

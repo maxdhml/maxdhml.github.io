@@ -99,10 +99,7 @@ const writeups = [
     { title: "YesWeHack Write Ups", descKey: "writeup-desc-ywh", url: "write-ups/YesWeHack%20Write%20Ups/index.html" }
 ];
 
-const projects = [
-    { title: "R36S Mp3 Player - Ipod Design", descKey: "project-desc-r36s", url: "#" },
-    { title: "Custom C2 Framework", descKey: "project-desc-c2", url: "#" }
-];
+const projects = [];
 
 /* ─── Merge localStorage items with hardcoded data ─── */
 function getEditorItems(type) {
