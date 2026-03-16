@@ -10,6 +10,8 @@ const translations = {
         "nav-about": "About",
         "section-writeup": "Write Up",
         "section-portfolio": "Portfolio & Projets",
+        "section-scolaire": "Scolaire",
+        "section-personnel": "Personnel",
         "section-contacts": "Contacts",
         "section-about": "About Me",
         "contact-intro": "Vous pouvez me contacter via les plateformes suivantes :",
@@ -38,6 +40,8 @@ const translations = {
         "nav-about": "About",
         "section-writeup": "Write Up",
         "section-portfolio": "Portfolio & Projects",
+        "section-scolaire": "Academic",
+        "section-personnel": "Personal",
         "section-contacts": "Contacts",
         "section-about": "About Me",
         "contact-intro": "You can reach me through the following platforms:",
@@ -59,6 +63,33 @@ const translations = {
         "cert-status-pending": "Pending"
     }
 };
+
+/* ───────────────────────────────────────────────
+   Theme Engine
+─────────────────────────────────────────────── */
+function initTheme() {
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    applyTheme(savedTheme);
+}
+
+function applyTheme(theme) {
+    if (theme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+    } else {
+        document.documentElement.removeAttribute('data-theme');
+    }
+    localStorage.setItem('theme', theme);
+    document.querySelectorAll('.theme-icon').forEach(icon => {
+        // Moon for light mode (switch to dark), Sun for dark mode (switch to light)
+        icon.textContent = theme === 'light' ? '🌙' : '☀️';
+    });
+}
+
+function toggleTheme() {
+    const currentTheme = localStorage.getItem('theme') || 'dark';
+    const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+    applyTheme(newTheme);
+}
 
 /* ───────────────────────────────────────────────
    Language Engine
@@ -88,7 +119,13 @@ function toggleLanguage() {
     applyLanguage(newLang);
     // Re-render dynamic cards so descriptions update
     renderCards(getMergedData(writeups, 'writeups'), 'writeups-list');
-    renderCards(getMergedData(projects, 'projects'), 'projects-list');
+    
+    const allProjects = getMergedData(projects, 'projects');
+    const scolaireProjects = allProjects.filter(p => (p.category || 'personnel').toLowerCase() === 'scolaire');
+    const personnelProjects = allProjects.filter(p => (p.category || 'personnel').toLowerCase() !== 'scolaire');
+    
+    renderCards(scolaireProjects, 'projects-scolaire-list');
+    renderCards(personnelProjects, 'projects-personnel-list');
 }
 
 /* ───────────────────────────────────────────────
@@ -114,6 +151,7 @@ function getEditorItems(type) {
                 descKey: '__editor__',
                 descDirect: lang === 'fr' ? (i.descFr || i.descEn || '') : (i.descEn || i.descFr || ''),
                 url: 'article.html?type=' + (type === 'writeups' ? 'writeup' : 'project') + '&id=' + i.id,
+                category: i.category || 'personnel'
             }));
     } catch {
         return [];
@@ -212,9 +250,17 @@ function initContactCards() {
    Init
 ─────────────────────────────────────────────── */
 document.addEventListener('DOMContentLoaded', () => {
+    initTheme();
     applyLanguage(getCurrentLang());
     renderCards(getMergedData(writeups, 'writeups'), 'writeups-list');
-    renderCards(getMergedData(projects, 'projects'), 'projects-list');
+    
+    const allProjects = getMergedData(projects, 'projects');
+    const scolaireProjects = allProjects.filter(p => (p.category || 'personnel').toLowerCase() === 'scolaire');
+    const personnelProjects = allProjects.filter(p => (p.category || 'personnel').toLowerCase() !== 'scolaire');
+    
+    renderCards(scolaireProjects, 'projects-scolaire-list');
+    renderCards(personnelProjects, 'projects-personnel-list');
+    
     initHamburger();
     initContactCards();
 });

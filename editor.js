@@ -110,7 +110,22 @@ function clearIdleTimer() {
     clearTimeout(idleTimer);
 }
 
-/* ─── Login Handler ─── */
+/* ─── Change destination based on category selection ─── */
+document.getElementById('field-category')?.addEventListener('change', (e) => {
+    const destSelect = document.getElementById('field-destination');
+    if (!destSelect) return;
+    if (currentTab === 'writeups') {
+        const destVal = 'write-ups/' + e.target.value;
+        if ([...destSelect.options].some(o => o.value === destVal)) {
+            destSelect.value = destVal;
+        }
+    } else {
+        const destVal = 'projects/' + e.target.value.toLowerCase();
+        if ([...destSelect.options].some(o => o.value === destVal)) {
+            destSelect.value = destVal;
+        }
+    }
+});
 async function handleLogin(password) {
     const loginError = document.getElementById('login-error');
     const loginLockout = document.getElementById('login-lockout');
@@ -285,12 +300,24 @@ function loadItemIntoEditor(id) {
     document.getElementById('field-desc-fr').value = item.descFr || '';
     document.getElementById('field-desc-en').value = item.descEn || '';
 
-    // Show/hide category for writeups
-    document.getElementById('category-row').style.display =
-        currentTab === 'writeups' ? '' : 'none';
+    // Show category row for both
+    document.getElementById('category-row').style.display = '';
 
+    const catSelect = document.getElementById('field-category');
+    catSelect.innerHTML = '';
     if (currentTab === 'writeups') {
-        document.getElementById('field-category').value = item.category || 'TryHackMe CTF Write Ups';
+        catSelect.innerHTML = `
+            <option value="TryHackMe CTF Write Ups">TryHackMe CTF Write Ups</option>
+            <option value="YesWeHack Write Ups">YesWeHack Write Ups</option>
+            <option value="Other">Autre</option>
+        `;
+        catSelect.value = item.category || 'TryHackMe CTF Write Ups';
+    } else {
+        catSelect.innerHTML = `
+            <option value="Personnel">Personnel</option>
+            <option value="Scolaire">Scolaire</option>
+        `;
+        catSelect.value = item.category || 'Personnel';
     }
 
     // Show/hide destination options based on tab
@@ -308,7 +335,14 @@ function loadItemIntoEditor(id) {
             destSelect.value = destVal;
         }
     } else {
-        document.getElementById('field-destination').value = 'projects';
+        const cat = item.category || 'Personnel';
+        const destVal = 'projects/' + cat.toLowerCase();
+        const destSelect = document.getElementById('field-destination');
+        if ([...destSelect.options].some(o => o.value === destVal)) {
+            destSelect.value = destVal;
+        } else {
+            document.getElementById('field-destination').value = 'projects/personnel';
+        }
     }
 
     // Load Quill content
@@ -342,6 +376,8 @@ function createNewItem() {
 
     if (currentTab === 'writeups') {
         item.category = 'TryHackMe CTF Write Ups';
+    } else {
+        item.category = 'Personnel';
     }
 
     const items = loadItems(currentTab);
@@ -367,9 +403,7 @@ function saveCurrentItem() {
     items[idx].content = quill.root.innerHTML;
     items[idx].updatedAt = new Date().toISOString();
 
-    if (currentTab === 'writeups') {
-        items[idx].category = document.getElementById('field-category').value;
-    }
+    items[idx].category = document.getElementById('field-category').value;
 
     saveItems(currentTab, items);
     renderItemsList();
@@ -422,12 +456,27 @@ function exportAsHtml() {
 
     // Determine back link
     const isWriteup = currentTab === 'writeups';
-    // For write-ups: file goes into write-ups/<category>/<article-slug>/index.html → depth 3 (../../../)
-    // For projects: file goes into projects/<project-slug>/index.html → depth 2 (../../)
-    const depth = isWriteup ? 3 : 2;
+    const categoryName = document.getElementById('field-category').value;
+    const catIsScolaire = categoryName.toLowerCase() === 'scolaire';
+
+    let depth;
+    let backPage;
+    let activeNav;
+    
+    if (isWriteup) {
+        // write-ups/<category>/<article-slug>/index.html → depth 3 (../../../)
+        depth = 3;
+        const rel = '../'.repeat(depth);
+        backPage = rel + 'index.html';
+        activeNav = 'nav-writeup';
+    } else {
+        // projects/<scolaire|personnel>/<project-slug>/index.html → depth 3 (../../../)
+        depth = 3;
+        const rel = '../'.repeat(depth);
+        backPage = rel + 'portfolio.html';
+        activeNav = 'nav-portfolio';
+    }
     const rel = '../'.repeat(depth);
-    const backPage = isWriteup ? rel + 'index.html' : rel + 'portfolio.html';
-    const activeNav = isWriteup ? 'nav-writeup' : 'nav-portfolio';
 
     const htmlContent = `<!DOCTYPE html>
 <html lang="fr">
@@ -461,9 +510,14 @@ function exportAsHtml() {
                         <div class="profile-sub" data-i18n="profile-sub">Portfolio &amp; writeups</div>
                     </div>
                 </div>
-                <button class="btn-lang" onclick="toggleLanguage()">
-                    <span data-i18n="btn-lang-label">🇬🇧 EN</span>
-                </button>
+                <div class="header-actions">
+                    <button class="btn-theme" onclick="toggleTheme()" aria-label="Toggle theme">
+                        <span class="theme-icon">☀️</span>
+                    </button>
+                    <button class="btn-lang" onclick="toggleLanguage()">
+                        <span data-i18n="btn-lang-label">🇬🇧 EN</span>
+                    </button>
+                </div>
                 <button id="hamburger-btn" class="btn-hamburger" aria-label="Menu" aria-expanded="false">
                     <span></span><span></span><span></span>
                 </button>
@@ -572,16 +626,30 @@ async function exportCategoryIndex() {
 
         showToast(`📋 ${exportCount} articles.json exporté(s) ! Place chacun dans write-ups/<catégorie>/`, 'success');
     } else {
-        // Projects
-        if (items.length === 0) {
+        // Group projects by category
+        const categories = {};
+        items.forEach(item => {
+            const cat = (item.category || 'Personnel').toLowerCase();
+            if (!categories[cat]) categories[cat] = [];
+            categories[cat].push(item);
+        });
+
+        const catKeys = Object.keys(categories);
+        if (catKeys.length === 0) {
             showToast('❌ Aucun projet à exporter', 'error');
             return;
         }
 
-        const remotePath = 'projects/articles.json';
-        const merged = await mergeWithExisting(remotePath, items);
-        downloadJsonFile(merged, 'articles_projects.json');
-        showToast('📋 articles.json exporté ! Place-le dans projects/', 'success');
+        let exportCount = 0;
+        for (const cat of catKeys) {
+            const catItems = categories[cat];
+            const remotePath = `projects/${encodeURIComponent(cat)}/articles.json`;
+            const merged = await mergeWithExisting(remotePath, catItems);
+            downloadJsonFile(merged, `articles_projects_${toSlug(cat)}.json`);
+            exportCount++;
+        }
+
+        showToast(`📋 ${exportCount} articles.json exporté(s) ! Place chacun dans projects/<scolaire|personnel>/`, 'success');
     }
 }
 
@@ -608,6 +676,7 @@ async function mergeWithExisting(remotePath, newItems) {
             title: item.title,
             desc: item.descFr || item.descEn || '',
             date: item.createdAt || new Date().toISOString(),
+            category: item.category || (isWriteup ? 'Other' : 'Personnel')
         }));
 
     // Merge: keep existing articles, add/update new ones by slug

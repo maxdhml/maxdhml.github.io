@@ -14,6 +14,33 @@
     --card-radius: 12px;
     --transition: 0.2s ease;
     --border-subtle: rgba(255, 255, 255, 0.06);
+
+    --bg-overlay-light: rgba(255, 255, 255, 0.03);
+    --bg-overlay-medium: rgba(255, 255, 255, 0.05);
+    --btn-glass-bg: rgba(30, 30, 30, 0.8);
+    --btn-glass-hover: rgba(42, 42, 42, 0.9);
+    --banner-bg: rgba(15, 16, 20, 0.95);
+    --avatar-bg: #222;
+    --avatar-border: rgba(255, 255, 255, 0.08);
+}
+
+:root[data-theme="light"] {
+    --bg-body: #f8fafc;
+    --bg-card: #ffffff;
+    --bg-card-hover: #f1f5f9;
+    --text-primary: #0f172a;
+    --text-secondary: #64748b;
+    --accent: #2563eb;
+    --accent-hover: #1d4ed8;
+    --border-subtle: rgba(0, 0, 0, 0.1);
+    
+    --bg-overlay-light: rgba(0, 0, 0, 0.03);
+    --bg-overlay-medium: rgba(0, 0, 0, 0.06);
+    --btn-glass-bg: rgba(255, 255, 255, 0.8);
+    --btn-glass-hover: rgba(240, 240, 240, 0.9);
+    --banner-bg: rgba(248, 250, 252, 0.95);
+    --avatar-bg: #e2e8f0;
+    --avatar-border: rgba(0, 0, 0, 0.1);
 }
 
 * {
@@ -102,8 +129,8 @@ a {
     min-width: 48px;
     min-height: 48px;
     border-radius: 50%;
-    background-color: #222;
-    border: 2px solid rgba(255, 255, 255, 0.08);
+    background-color: var(--avatar-bg);
+    border: 2px solid var(--avatar-border);
     overflow: hidden;
     flex-shrink: 0;
 }
@@ -130,7 +157,7 @@ a {
 
 /* ─── Top Banner ─── */
 .top-banner {
-    background-color: rgba(15, 16, 20, 0.95);
+    background-color: var(--banner-bg);
     color: var(--text-secondary);
     text-align: center;
     padding: 0.55rem 1rem;
@@ -225,12 +252,12 @@ a {
 .nav-links a:hover {
     color: var(--text-primary);
     transform: translateX(3px);
-    background-color: rgba(255, 255, 255, 0.03);
+    background-color: var(--bg-overlay-light);
 }
 
 .nav-links a.active {
     color: var(--text-primary);
-    background-color: rgba(255, 255, 255, 0.05);
+    background-color: var(--bg-overlay-medium);
     font-weight: 600;
 }
 
@@ -270,22 +297,27 @@ a {
     transform: translateY(-1px);
 }
 
-/* ─── Language Button ─── */
-.btn-lang {
+/* ─── Header Actions (Lang / Theme) ─── */
+.header-actions {
     position: fixed;
     top: 3.5rem;
     right: 1.75rem;
     z-index: 9999;
+    display: flex;
+    gap: 0.5rem;
+}
+
+.btn-theme,
+.btn-lang {
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 0.35rem;
-    background-color: rgba(30, 30, 30, 0.8);
+    background-color: var(--btn-glass-bg);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     color: var(--text-secondary);
-    padding: 0.4rem 0.85rem;
     border-radius: 8px;
-    font-size: 0.82rem;
     font-weight: 600;
     border: 1px solid var(--border-subtle);
     cursor: pointer;
@@ -294,10 +326,21 @@ a {
     letter-spacing: 0.02em;
 }
 
+.btn-lang {
+    padding: 0.4rem 0.85rem;
+    font-size: 0.82rem;
+}
+
+.btn-theme {
+    padding: 0.4rem 0.6rem;
+    font-size: 1rem;
+}
+
+.btn-theme:hover,
 .btn-lang:hover {
-    background-color: rgba(42, 42, 42, 0.9);
+    background-color: var(--btn-glass-hover);
     color: var(--text-primary);
-    border-color: rgba(255, 255, 255, 0.12);
+    border-color: var(--border-subtle);
 }
 
 /* ─── Footer ─── */
@@ -412,7 +455,7 @@ footer {
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: rgba(255, 255, 255, 0.04);
+    background-color: var(--bg-overlay-light);
     border-radius: 10px;
     transition: background-color var(--transition), color var(--transition);
 }
@@ -497,7 +540,7 @@ footer {
     align-items: center;
     gap: 0.35rem;
     padding: 0.3rem 0.7rem;
-    background-color: rgba(255, 255, 255, 0.04);
+    background-color: var(--bg-overlay-light);
     border: 1px solid var(--border-subtle);
     border-radius: 6px;
     font-size: 0.78rem;
@@ -670,13 +713,21 @@ footer {
         padding: 0.25rem 0 0.75rem;
     }
 
-    /* Lang button — flows naturally in sidebar-top on mobile */
-    .btn-lang {
+    /* Header actions — flows naturally in sidebar-top on mobile */
+    .header-actions {
         position: static;
-        font-size: 0.78rem;
-        padding: 0.3rem 0.6rem;
         margin-left: auto;
         flex-shrink: 0;
+    }
+
+    .btn-lang {
+        font-size: 0.78rem;
+        padding: 0.3rem 0.6rem;
+    }
+
+    .btn-theme {
+        font-size: 0.9rem;
+        padding: 0.3rem 0.5rem;
     }
 
     /* Main content */
@@ -728,6 +779,10 @@ footer {
     .btn-lang {
         font-size: 0.72rem;
         padding: 0.25rem 0.5rem;
+    }
+    .btn-theme {
+        font-size: 0.8rem;
+        padding: 0.25rem 0.4rem;
     }
 
     .card-title {
