@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="maxdhml — Article">
+    <title>maxdhml | Article</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="editor.css">
+    <!-- Highlight.js for code blocks -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/atom-one-dark.min.css">
+    <style>
+        /* ─── Markdown article styles ─── */
+        .article-content img {
+            max-width: 100%;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+        .article-content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+        .article-content th,
+        .article-content td {
+            border: 1px solid var(--border);
+            padding: 0.5rem 0.75rem;
+            text-align: left;
+        }
+        .article-content th {
+            background: var(--card-bg);
+        }
+        .article-content blockquote {
+            border-left: 3px solid var(--accent);
+            margin: 1rem 0;
+            padding: 0.5rem 1rem;
+            color: var(--text-secondary);
+        }
+        .article-content pre {
+            border-radius: 8px;
+            overflow-x: auto;
+        }
+        .article-content code:not(pre code) {
+            background: var(--card-bg);
+            padding: 0.15rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+        .article-content hr {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 2rem 0;
+        }
+
+        .article-loading {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-secondary);
+        }
+        .article-loading .spinner {
+            display: inline-block;
+            width: 28px;
+            height: 28px;
+            border: 3px solid var(--border);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+            margin-bottom: 1rem;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+</head>
+
+<body>
+    <div class="top-banner">
+        <span data-i18n="banner">🟢 En recherche d'alternance — <a href="CV Maxime DUHAMEL - Alternance.pdf"
+                download>voir mon CV</a></span>
+    </div>
+    <div class="container">
+        <aside class="sidebar">
+            <div class="sidebar-top">
+                <div class="profile-section">
+                    <div class="avatar"><img src="avatar.png" alt="maxdhml avatar"></div>
+                    <div>
+                        <div class="profile-name">maxdhml</div>
+                        <div class="profile-sub" data-i18n="profile-sub">Portfolio &amp; writeups</div>
+                    </div>
+                </div>
+                <div class="header-actions">
+                    <button class="btn-theme" onclick="toggleTheme()" aria-label="Toggle theme">
+                        <span class="theme-icon">☀️</span>
+                    </button>
+                    <button class="btn-lang" onclick="toggleLanguage()">
+                        <span data-i18n="btn-lang-label">🇬🇧 EN</span>
+                    </button>
+                </div>
+                <button id="hamburger-btn" class="btn-hamburger" aria-label="Menu" aria-expanded="false">
+                    <span></span><span></span><span></span>
+                </button>
+            </div>
+
+            <nav id="nav-menu">
+                <ul class="nav-links">
+                    <li><a href="index.html" data-i18n="nav-writeup">Write Up</a></li>
+                    <li><a href="portfolio.html" data-i18n="nav-portfolio">Portfolio</a></li>
+                    <li><a href="contact.html" data-i18n="nav-contacts">Contacts</a></li>
+                    <li><a href="about.html" data-i18n="nav-about">About</a></li>
+                </ul>
+            </nav>
+
+            <a href="CV Maxime DUHAMEL - Alternance.pdf" download class="btn-download">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+                CV
+            </a>
+
+            <footer><span data-i18n="footer">© 2026 maxdhml</span></footer>
+        </aside>
+
+        <main class="main-content">
+            <div id="article-back" class="article-back">
+                <a href="index.html" id="back-link">← Retour</a>
+            </div>
+            <article id="article-container" class="article-content">
+                <div class="article-loading">
+                    <div class="spinner"></div>
+                    <p>Chargement de l'article…</p>
+                </div>
+            </article>
+        </main>
+    </div>
+
+    <!-- Marked.js for Markdown parsing -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <!-- Highlight.js for code syntax -->
+    <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/lib/highlight.min.js"></script>
+    <script src="script.js"></script>
+    <script>
+        /* ─── Article Viewer (Markdown) ─── */
+        (function () {
+            const params = new URLSearchParams(window.location.search);
+            const mdPath = params.get('path');
+
+            const container = document.getElementById('article-container');
+            const backLink = document.getElementById('back-link');
+
+            if (!mdPath) {
+                container.innerHTML = '<p style="color:var(--text-secondary)">Article non trouvé.</p>';
+                return;
+            }
+
+            // Determine back page from path
+            if (mdPath.startsWith('write-ups/')) {
+                backLink.href = 'index.html';
+                document.querySelectorAll('.nav-links a').forEach(a => {
+                    if (a.getAttribute('data-i18n') === 'nav-writeup') a.classList.add('active');
+                });
+            } else if (mdPath.startsWith('projects/')) {
+                backLink.href = 'portfolio.html';
+                document.querySelectorAll('.nav-links a').forEach(a => {
+                    if (a.getAttribute('data-i18n') === 'nav-portfolio') a.classList.add('active');
+                });
+            }
+
+            // Configure marked (without highlight dependency)
+            marked.setOptions({
+                breaks: true,
+                gfm: true
+            });
+
+            // Fetch and render the Markdown file
+            fetch(encodeURI(mdPath))
+                .then(response => {
+                    if (!response.ok) throw new Error('Not found');
+                    return response.text();
+                })
+                .then(md => {
+                    // Extract title from first # heading
+                    const titleMatch = md.match(/^#\s+(.+)$/m);
+                    const title = titleMatch ? titleMatch[1].trim() : 'Article';
+
+                    // Update page title
+                    document.title = `maxdhml | ${title}`;
+
+                    // Render markdown to HTML
+                    const htmlContent = marked.parse(md);
+                    container.innerHTML = htmlContent;
+
+                    // Apply highlight.js to code blocks if available
+                    if (typeof hljs !== 'undefined') {
+                        container.querySelectorAll('pre code').forEach(block => {
+                            hljs.highlightElement(block);
+                        });
+                    }
+                })
+                .catch(err => {
+                    container.innerHTML = '<p style="color:var(--text-secondary)">Article non trouvé ou erreur de chargement.</p>';
+                    console.error('Error loading article:', err);
+                });
+        })();
+    </script>
+</body>
+
+</html>

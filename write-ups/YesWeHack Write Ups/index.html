@@ -97,7 +97,7 @@
                     }
                     list.innerHTML = articles.map(a => `
                         <li class="writeup-card" role="link" tabindex="0"
-                            onclick="window.location.href='${a.slug}/index.html'">
+                            onclick="window.location.href='../../article-viewer.html?path=write-ups/YesWeHack%20Write%20Ups/${encodeURIComponent(a.file || a.slug + '.md')}'">
                             <div class="card-content">
                                 <div class="card-title">${a.title}</div>
                                 <div class="card-desc">${a.desc || ''}</div>

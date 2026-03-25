@@ -118,14 +118,9 @@ function toggleLanguage() {
     const newLang = getCurrentLang() === 'fr' ? 'en' : 'fr';
     applyLanguage(newLang);
     // Re-render dynamic cards so descriptions update
-    renderCards(getMergedData(writeups, 'writeups'), 'writeups-list');
-    
-    const allProjects = getMergedData(projects, 'projects');
-    const scolaireProjects = allProjects.filter(p => (p.category || 'personnel').toLowerCase() === 'scolaire');
-    const personnelProjects = allProjects.filter(p => (p.category || 'personnel').toLowerCase() !== 'scolaire');
-    
-    renderCards(scolaireProjects, 'projects-scolaire-list');
-    renderCards(personnelProjects, 'projects-personnel-list');
+    renderCards(writeups, 'writeups-list');
+    renderCards(projects.filter(p => (p.category || 'personnel').toLowerCase() === 'scolaire'), 'projects-scolaire-list');
+    renderCards(projects.filter(p => (p.category || 'personnel').toLowerCase() !== 'scolaire'), 'projects-personnel-list');
 }
 
 /* ───────────────────────────────────────────────
@@ -138,30 +133,7 @@ const writeups = [
 
 const projects = [];
 
-/* ─── Merge localStorage items with hardcoded data ─── */
-function getEditorItems(type) {
-    const key = type === 'writeups' ? 'editor_writeups' : 'editor_projects';
-    try {
-        const items = JSON.parse(localStorage.getItem(key) || '[]');
-        const lang = getCurrentLang();
-        return items
-            .filter(i => i.title && i.title.trim() !== '')
-            .map(i => ({
-                title: i.title,
-                descKey: '__editor__',
-                descDirect: lang === 'fr' ? (i.descFr || i.descEn || '') : (i.descEn || i.descFr || ''),
-                url: 'article.html?type=' + (type === 'writeups' ? 'writeup' : 'project') + '&id=' + i.id,
-                category: i.category || 'personnel'
-            }));
-    } catch {
-        return [];
-    }
-}
 
-function getMergedData(baseData, type) {
-    const editorItems = getEditorItems(type);
-    return [...baseData, ...editorItems];
-}
 
 function renderCards(data, containerId) {
     const container = document.getElementById(containerId);
@@ -252,11 +224,10 @@ function initContactCards() {
 document.addEventListener('DOMContentLoaded', () => {
     initTheme();
     applyLanguage(getCurrentLang());
-    renderCards(getMergedData(writeups, 'writeups'), 'writeups-list');
+    renderCards(writeups, 'writeups-list');
     
-    const allProjects = getMergedData(projects, 'projects');
-    const scolaireProjects = allProjects.filter(p => (p.category || 'personnel').toLowerCase() === 'scolaire');
-    const personnelProjects = allProjects.filter(p => (p.category || 'personnel').toLowerCase() !== 'scolaire');
+    const scolaireProjects = projects.filter(p => (p.category || 'personnel').toLowerCase() === 'scolaire');
+    const personnelProjects = projects.filter(p => (p.category || 'personnel').toLowerCase() !== 'scolaire');
     
     renderCards(scolaireProjects, 'projects-scolaire-list');
     renderCards(personnelProjects, 'projects-personnel-list');

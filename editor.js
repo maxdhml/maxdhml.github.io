@@ -446,266 +446,53 @@ function closePreview() {
     document.getElementById('editor-preview').hidden = true;
 }
 
-/* ─── Export as standalone HTML ─── */
-function exportAsHtml() {
+/* ─── Export as Markdown file ─── */
+function exportAsMarkdown() {
     if (!currentItemId) return;
 
     const title = document.getElementById('field-title').value.trim() || 'Sans titre';
     const content = quill.root.innerHTML;
     const destination = document.getElementById('field-destination').value;
 
-    // Determine back link
-    const isWriteup = currentTab === 'writeups';
-    const categoryName = document.getElementById('field-category').value;
-    const catIsScolaire = categoryName.toLowerCase() === 'scolaire';
+    // Convert HTML to Markdown using Turndown
+    const turndownService = new TurndownService({
+        headingStyle: 'atx',
+        codeBlockStyle: 'fenced',
+        emDelimiter: '*',
+    });
 
-    let depth;
-    let backPage;
-    let activeNav;
-    
-    if (isWriteup) {
-        // write-ups/<category>/<article-slug>/index.html → depth 3 (../../../)
-        depth = 3;
-        const rel = '../'.repeat(depth);
-        backPage = rel + 'index.html';
-        activeNav = 'nav-writeup';
-    } else {
-        // projects/<scolaire|personnel>/<project-slug>/index.html → depth 3 (../../../)
-        depth = 3;
-        const rel = '../'.repeat(depth);
-        backPage = rel + 'portfolio.html';
-        activeNav = 'nav-portfolio';
-    }
-    const rel = '../'.repeat(depth);
+    // Handle Quill's code blocks (they use <pre class="ql-syntax">)
+    turndownService.addRule('quillCodeBlock', {
+        filter: function (node) {
+            return node.nodeName === 'PRE' && node.classList.contains('ql-syntax');
+        },
+        replacement: function (content, node) {
+            return '\n```\n' + node.textContent + '\n```\n';
+        }
+    });
 
-    const htmlContent = `<!DOCTYPE html>
-<html lang="fr">
+    const markdownBody = turndownService.turndown(content);
+    const markdownContent = `# ${title}\n\n${markdownBody}\n`;
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="maxdhml — ${escapeHtml(title)}">
-    <title>maxdhml | ${escapeHtml(title)}</title>
-    <link rel="icon" type="image/png" href="${rel}favicon.png">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="stylesheet" href="${rel}style.css">
-    <link rel="stylesheet" href="${rel}editor.css">
-    <!-- Highlight.js for code blocks -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/atom-one-dark.min.css">
-</head>
-
-<body>
-    <div class="top-banner">
-        <span data-i18n="banner">🟢 En recherche d'alternance — <a href="${rel}CV Maxime DUHAMEL - Alternance.pdf"
-                download>voir mon CV</a></span>
-    </div>
-    <div class="container">
-        <aside class="sidebar">
-            <div class="sidebar-top">
-                <div class="profile-section">
-                    <div class="avatar"><img src="${rel}avatar.png" alt="maxdhml avatar"></div>
-                    <div>
-                        <div class="profile-name">maxdhml</div>
-                        <div class="profile-sub" data-i18n="profile-sub">Portfolio &amp; writeups</div>
-                    </div>
-                </div>
-                <div class="header-actions">
-                    <button class="btn-theme" onclick="toggleTheme()" aria-label="Toggle theme">
-                        <span class="theme-icon">☀️</span>
-                    </button>
-                    <button class="btn-lang" onclick="toggleLanguage()">
-                        <span data-i18n="btn-lang-label">🇬🇧 EN</span>
-                    </button>
-                </div>
-                <button id="hamburger-btn" class="btn-hamburger" aria-label="Menu" aria-expanded="false">
-                    <span></span><span></span><span></span>
-                </button>
-            </div>
-
-            <nav id="nav-menu">
-                <ul class="nav-links">
-                    <li><a href="${rel}index.html"${activeNav === 'nav-writeup' ? ' class="active"' : ''} data-i18n="nav-writeup">Write Up</a></li>
-                    <li><a href="${rel}portfolio.html"${activeNav === 'nav-portfolio' ? ' class="active"' : ''} data-i18n="nav-portfolio">Portfolio</a></li>
-                    <li><a href="${rel}contact.html" data-i18n="nav-contacts">Contacts</a></li>
-                    <li><a href="${rel}about.html" data-i18n="nav-about">About</a></li>
-                </ul>
-            </nav>
-
-            <a href="${rel}CV Maxime DUHAMEL - Alternance.pdf" download class="btn-download">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                    stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                    <polyline points="7 10 12 15 17 10"></polyline>
-                    <line x1="12" y1="15" x2="12" y2="3"></line>
-                </svg>
-                CV
-            </a>
-
-            <footer><span data-i18n="footer">© 2026 maxdhml</span></footer>
-        </aside>
-
-        <main class="main-content">
-            <div class="article-back">
-                <a href="${backPage}">← Retour</a>
-            </div>
-            <article class="article-content">
-                <h1>${escapeHtml(title)}</h1>
-                <div class="article-meta">
-                    ${new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}
-                </div>
-                ${content}
-            </article>
-        </main>
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/lib/highlight.min.js"><\/script>
-    <script src="${rel}script.js"><\/script>
-    <script>
-        // Syntax highlight code blocks
-        document.querySelectorAll('.article-content pre').forEach(block => {
-            hljs.highlightElement(block);
-        });
-    <\/script>
-</body>
-
-</html>`;
+    // Generate filename from title
+    const slug = toSlug(title);
+    const filename = slug + '.md';
 
     // Download the file
-    const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'index.html';
-    a.click();
-    URL.revokeObjectURL(url);
-
-    // Build instruction for the user
-    const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
-    const fullPath = destination + '/' + slug + '/';
-    showToast(`📄 Fichier exporté ! Place-le dans : ${fullPath}`, 'success');
-}
-
-/* ─── Helper: generate slug from title ─── */
-function toSlug(str) {
-    return str.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
-}
-
-/* ─── Export category/project index as articles.json ─── */
-/* Fetches the existing articles.json from the live site, merges new articles, and downloads the updated JSON */
-
-const SITE_BASE_URL = 'https://maxdhml.github.io';
-
-async function exportCategoryIndex() {
-    const items = loadItems(currentTab);
-    const isWriteup = currentTab === 'writeups';
-
-    if (isWriteup) {
-        // Group articles by category
-        const categories = {};
-        items.forEach(item => {
-            const cat = item.category || 'Other';
-            if (!categories[cat]) categories[cat] = [];
-            categories[cat].push(item);
-        });
-
-        const catKeys = Object.keys(categories);
-        if (catKeys.length === 0) {
-            showToast('❌ Aucun article à exporter', 'error');
-            return;
-        }
-
-        let exportCount = 0;
-        for (const cat of catKeys) {
-            const catItems = categories[cat];
-            const remotePath = `write-ups/${encodeURIComponent(cat)}/articles.json`;
-            const merged = await mergeWithExisting(remotePath, catItems);
-            downloadJsonFile(merged, `articles_${toSlug(cat)}.json`);
-            exportCount++;
-        }
-
-        showToast(`📋 ${exportCount} articles.json exporté(s) ! Place chacun dans write-ups/<catégorie>/`, 'success');
-    } else {
-        // Group projects by category
-        const categories = {};
-        items.forEach(item => {
-            const cat = (item.category || 'Personnel').toLowerCase();
-            if (!categories[cat]) categories[cat] = [];
-            categories[cat].push(item);
-        });
-
-        const catKeys = Object.keys(categories);
-        if (catKeys.length === 0) {
-            showToast('❌ Aucun projet à exporter', 'error');
-            return;
-        }
-
-        let exportCount = 0;
-        for (const cat of catKeys) {
-            const catItems = categories[cat];
-            const remotePath = `projects/${encodeURIComponent(cat)}/articles.json`;
-            const merged = await mergeWithExisting(remotePath, catItems);
-            downloadJsonFile(merged, `articles_projects_${toSlug(cat)}.json`);
-            exportCount++;
-        }
-
-        showToast(`📋 ${exportCount} articles.json exporté(s) ! Place chacun dans projects/<scolaire|personnel>/`, 'success');
-    }
-}
-
-/* Fetch existing articles.json from the live site and merge with new items */
-async function mergeWithExisting(remotePath, newItems) {
-    let existingArticles = [];
-
-    try {
-        const response = await fetch(`${SITE_BASE_URL}/${remotePath}?_=${Date.now()}`);
-        if (response.ok) {
-            existingArticles = await response.json();
-            if (!Array.isArray(existingArticles)) existingArticles = [];
-        }
-    } catch (e) {
-        // If fetch fails (offline, file doesn't exist), start fresh
-        console.log('Could not fetch existing articles.json, starting fresh.');
-    }
-
-    // Convert new items to article entries
-    const newArticles = newItems
-        .filter(i => i.title && i.title.trim() !== '')
-        .map(item => ({
-            slug: toSlug(item.title),
-            title: item.title,
-            desc: item.descFr || item.descEn || '',
-            date: item.createdAt || new Date().toISOString(),
-            category: item.category || (isWriteup ? 'Other' : 'Personnel')
-        }));
-
-    // Merge: keep existing articles, add/update new ones by slug
-    const mergedMap = new Map();
-
-    // Add existing first
-    existingArticles.forEach(a => {
-        if (a.slug) mergedMap.set(a.slug, a);
-    });
-
-    // Add/update with new articles
-    newArticles.forEach(a => {
-        mergedMap.set(a.slug, a);
-    });
-
-    // Convert back to array, sorted by date (newest first)
-    return Array.from(mergedMap.values()).sort((a, b) => {
-        return new Date(b.date) - new Date(a.date);
-    });
-}
-
-function downloadJsonFile(data, filename) {
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json;charset=utf-8' });
+    const blob = new Blob([markdownContent], { type: 'text/markdown;charset=utf-8' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
     a.download = filename;
     a.click();
     URL.revokeObjectURL(url);
+
+    showToast(`📄 Fichier ${filename} téléchargé ! Place-le dans : ${destination}/`, 'success');
+}
+
+/* ─── Helper: generate slug from title ─── */
+function toSlug(str) {
+    return str.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 }
 
 function downloadFile(content, filename) {
@@ -905,11 +692,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // Preview
     document.getElementById('btn-preview').addEventListener('click', showPreview);
 
-    // Export HTML
-    document.getElementById('btn-export-html').addEventListener('click', exportAsHtml);
+    // Export Markdown
+    document.getElementById('btn-export-md').addEventListener('click', exportAsMarkdown);
 
-    // Export category index
-    document.getElementById('btn-export-index').addEventListener('click', exportCategoryIndex);
     document.getElementById('btn-close-preview').addEventListener('click', closePreview);
 
     // Export

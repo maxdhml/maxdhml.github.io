@@ -96,15 +96,17 @@
                         li.setAttribute('tabindex', '0');
                         // Determine category
                         const category = (a.category || defaultCategory).toLowerCase() === 'scolaire' ? 'scolaire' : 'personnel';
-                        // Add path to url based on category
-                        const path = category === 'scolaire' ? 'projects/scolaire/' : 'projects/personnel/';
+                        // Build the article-viewer URL using the .md file
+                        const dirPath = category === 'scolaire' ? 'projects/scolaire/' : 'projects/personnel/';
+                        const fileName = a.file || (a.slug + '.md');
+                        const articleUrl = 'article-viewer.html?path=' + encodeURIComponent(dirPath + fileName);
                         li.addEventListener('click', () => {
-                            window.location.href = path + a.slug + '/index.html';
+                            window.location.href = articleUrl;
                         });
                         li.addEventListener('keydown', e => {
                             if (e.key === 'Enter' || e.key === ' ') {
                                 e.preventDefault();
-                                window.location.href = path + a.slug + '/index.html';
+                                window.location.href = articleUrl;
                             }
                         });
                         li.innerHTML = `
