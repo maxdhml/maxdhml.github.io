@@ -1,1 +1,30 @@
-[]
+[
+  {
+    "slug": "sae-1.03-caracterisation-supports-transmission",
+    "title": "SAE 1.03 : Caractérisation de supports de transmission",
+    "desc": "**Nov. 2025 – Déc. 2025 | Université d'Artois**",
+    "date": "2026-03-26T23:03:04.109Z",
+    "file": "sae-1.03-caracterisation-supports-transmission.md"
+  },
+  {
+    "slug": "sae-1.04-portfolio-numerique",
+    "title": "SAE 1.04 : Développement d'un Portfolio Numérique",
+    "desc": "**Oct. 2025 – Déc. 2025 | Université d'Artois**",
+    "date": "2026-03-26T22:21:22.045Z",
+    "file": "sae-1.04-portfolio-numerique.md"
+  },
+  {
+    "slug": "sae-1.02-conception-reseau-entreprise",
+    "title": "SAE 1.02 : Conception d'un réseau d'entreprise sécurisé",
+    "desc": "**Déc. 2025 – Janv. 2026 | Université d'Artois**",
+    "date": "2026-03-26T22:21:15.154Z",
+    "file": "sae-1.02-conception-reseau-entreprise.md"
+  },
+  {
+    "slug": "sae-1.05-automatisation-traitement-donnees",
+    "title": "SAE 1.05 : Automatisation et Traitement de Données",
+    "desc": "**Janv. 2026 – Févr. 2026 | Université d'Artois**",
+    "date": "2026-03-26T22:21:08.834Z",
+    "file": "sae-1.05-automatisation-traitement-donnees.md"
+  }
+]
