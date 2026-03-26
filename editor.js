@@ -298,7 +298,6 @@ function loadItemIntoEditor(id) {
 
     document.getElementById('field-title').value = item.title || '';
     document.getElementById('field-desc-fr').value = item.descFr || '';
-    document.getElementById('field-desc-en').value = item.descEn || '';
 
     // Show category row for both
     document.getElementById('category-row').style.display = '';
@@ -369,7 +368,6 @@ function createNewItem() {
         id,
         title: '',
         descFr: '',
-        descEn: '',
         content: '',
         createdAt: new Date().toISOString(),
     };
@@ -399,7 +397,6 @@ function saveCurrentItem() {
 
     items[idx].title = document.getElementById('field-title').value.trim();
     items[idx].descFr = document.getElementById('field-desc-fr').value.trim();
-    items[idx].descEn = document.getElementById('field-desc-en').value.trim();
     items[idx].content = quill.root.innerHTML;
     items[idx].updatedAt = new Date().toISOString();
 
@@ -545,7 +542,7 @@ function importHtmlFile(file) {
                 id,
                 title,
                 descFr,
-                descEn: '',
+
                 content,
                 createdAt: new Date().toISOString(),
             };

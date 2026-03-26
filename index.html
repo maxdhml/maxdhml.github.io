@@ -14,7 +14,7 @@
 
 <body>
     <div class="top-banner">
-        <span data-i18n="banner">🟢 En recherche d'alternance — <a href="CV Maxime DUHAMEL - Alternance.pdf"
+        <span>🟢 En recherche d'alternance — <a href="CV Maxime DUHAMEL - Alternance.pdf"
                 download>voir mon CV</a></span>
     </div>
     <div class="container">
@@ -24,17 +24,10 @@
                     <div class="avatar"><img src="avatar.png" alt="maxdhml avatar"></div>
                     <div>
                         <div class="profile-name">maxdhml</div>
-                        <div class="profile-sub" data-i18n="profile-sub">Portfolio &amp; writeups</div>
+                        <div class="profile-sub">Portfolio &amp; writeups</div>
                     </div>
                 </div>
-                <div class="header-actions">
-                    <button class="btn-theme" onclick="toggleTheme()" aria-label="Toggle theme">
-                        <span class="theme-icon">☀️</span>
-                    </button>
-                    <button class="btn-lang" onclick="toggleLanguage()">
-                        <span data-i18n="btn-lang-label">🇬🇧 EN</span>
-                    </button>
-                </div>
+
                 <button id="hamburger-btn" class="btn-hamburger" aria-label="Menu" aria-expanded="false">
                     <span></span><span></span><span></span>
                 </button>
@@ -42,10 +35,10 @@
 
             <nav id="nav-menu">
                 <ul class="nav-links">
-                    <li><a href="index.html" class="active" data-i18n="nav-writeup">Write Up</a></li>
-                    <li><a href="portfolio.html" data-i18n="nav-portfolio">Portfolio</a></li>
-                    <li><a href="contact.html" data-i18n="nav-contacts">Contacts</a></li>
-                    <li><a href="about.html" data-i18n="nav-about">About</a></li>
+                    <li><a href="index.html" class="active">Write Up</a></li>
+                    <li><a href="portfolio.html">Portfolio</a></li>
+                    <li><a href="contact.html">Contacts</a></li>
+                    <li><a href="about.html">About</a></li>
                 </ul>
             </nav>
 
@@ -59,12 +52,12 @@
                 CV
             </a>
 
-            <footer><span data-i18n="footer">© 2026 maxdhml</span></footer>
+            <footer><span>© 2026 maxdhml</span></footer>
         </aside>
 
         <main class="main-content">
             <section id="writeups">
-                <h2 class="section-title" data-i18n="section-writeup">Write Up</h2>
+                <h2 class="section-title">Write Up</h2>
                 <ul id="writeups-list" class="writeup-list"></ul>
             </section>
         </main>

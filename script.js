@@ -1,145 +1,16 @@
 /* ───────────────────────────────────────────────
-   Translations FR / EN
-─────────────────────────────────────────────── */
-const translations = {
-    fr: {
-        "profile-sub": "Portfolio & writeups",
-        "nav-writeup": "Write Up",
-        "nav-portfolio": "Portfolio",
-        "nav-contacts": "Contacts",
-        "nav-about": "About",
-        "section-writeup": "Write Up",
-        "section-portfolio": "Portfolio & Projets",
-        "section-scolaire": "Scolaire",
-        "section-personnel": "Personnel",
-        "section-contacts": "Contacts",
-        "section-about": "About Me",
-        "contact-intro": "Vous pouvez me contacter via les plateformes suivantes :",
-        "contact-email-desc": "max.dhml@gmail.com",
-        "contact-linkedin-desc": "Me contacter sur LinkedIn",
-        "contact-github-desc": "Voir mes dépôts",
-        "about-p1": "Étudiant en Réseaux & Télécommunications avec un fort intérêt pour la cybersécurité.",
-        "about-p2": "Focalisé sur la compréhension des systèmes internes et des infrastructures réseau pour améliorer la sécurité.",
-        "about-p3": "Expérimenté avec les environnements Linux, les fondamentaux réseau et les challenges CTF. En développement continu de compétences pratiques à travers des projets concrets.",
-        "writeup-desc-thm": "Collection de solutions et walkthroughs TryHackMe CTF.",
-        "writeup-desc-ywh": "Rapports et découvertes de bug bounty sur YesWeHack.",
-        "project-desc-r36s": "Construction d'un lecteur MP3 style iPod sur la console Linux R36S.",
-        "project-desc-c2": "Framework de Command and Control pour tests.",
-        "btn-lang-label": "🇬🇧 EN",
-        "footer": "© 2026 maxdhml",
-        "banner": "🟢 En recherche d'alternance \u2014 <a href='CV Maxime DUHAMEL - Alternance.pdf' download>voir mon CV</a>",
-        "section-certifications": "Certifications",
-        "cert-status-progress": "En cours",
-        "cert-status-pending": "En attente"
-    },
-    en: {
-        "profile-sub": "Portfolio & writeups",
-        "nav-writeup": "Write Up",
-        "nav-portfolio": "Portfolio",
-        "nav-contacts": "Contacts",
-        "nav-about": "About",
-        "section-writeup": "Write Up",
-        "section-portfolio": "Portfolio & Projects",
-        "section-scolaire": "Academic",
-        "section-personnel": "Personal",
-        "section-contacts": "Contacts",
-        "section-about": "About Me",
-        "contact-intro": "You can reach me through the following platforms:",
-        "contact-email-desc": "max.dhml@gmail.com",
-        "contact-linkedin-desc": "Connect on LinkedIn",
-        "contact-github-desc": "Check my repositories",
-        "about-p1": "Computer Networks & Telecommunications student with a strong interest in cybersecurity.",
-        "about-p2": "Focused on understanding system internals and network infrastructures to improve security.",
-        "about-p3": "Experienced with Linux environments, networking fundamentals, and CTF challenges. Continuously developing practical skills through hands-on projects.",
-        "writeup-desc-thm": "Collection of TryHackMe CTF solutions and walkthroughs.",
-        "writeup-desc-ywh": "Bug bounty reports and findings from YesWeHack.",
-        "project-desc-r36s": "Building an iPod-style MP3 player from scratch on the R36S Linux console.",
-        "project-desc-c2": "Command and Control testing framework.",
-        "btn-lang-label": "🇫🇷 FR",
-        "footer": "© 2026 maxdhml",
-        "banner": "🟢 Looking for an apprenticeship \u2014 <a href='CV Maxime DUHAMEL - Alternance.pdf' download>view my CV</a>",
-        "section-certifications": "Certifications",
-        "cert-status-progress": "In progress",
-        "cert-status-pending": "Pending"
-    }
-};
-
-/* ───────────────────────────────────────────────
-   Theme Engine
-─────────────────────────────────────────────── */
-function initTheme() {
-    const savedTheme = localStorage.getItem('theme') || 'dark';
-    applyTheme(savedTheme);
-}
-
-function applyTheme(theme) {
-    if (theme === 'light') {
-        document.documentElement.setAttribute('data-theme', 'light');
-    } else {
-        document.documentElement.removeAttribute('data-theme');
-    }
-    localStorage.setItem('theme', theme);
-    document.querySelectorAll('.theme-icon').forEach(icon => {
-        // Moon for light mode (switch to dark), Sun for dark mode (switch to light)
-        icon.textContent = theme === 'light' ? '🌙' : '☀️';
-    });
-}
-
-function toggleTheme() {
-    const currentTheme = localStorage.getItem('theme') || 'dark';
-    const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-    applyTheme(newTheme);
-}
-
-/* ───────────────────────────────────────────────
-   Language Engine
-─────────────────────────────────────────────── */
-function getCurrentLang() {
-    return localStorage.getItem('lang') || 'fr';
-}
-
-function applyLanguage(lang) {
-    document.documentElement.lang = lang;
-    localStorage.setItem('lang', lang);
-    const t = translations[lang];
-    document.querySelectorAll('[data-i18n]').forEach(el => {
-        const key = el.getAttribute('data-i18n');
-        if (t[key] !== undefined) {
-            if (key === 'banner') {
-                el.innerHTML = t[key];
-            } else {
-                el.textContent = t[key];
-            }
-        }
-    });
-}
-
-function toggleLanguage() {
-    const newLang = getCurrentLang() === 'fr' ? 'en' : 'fr';
-    applyLanguage(newLang);
-    // Re-render dynamic cards so descriptions update
-    renderCards(writeups, 'writeups-list');
-    renderCards(projects.filter(p => (p.category || 'personnel').toLowerCase() === 'scolaire'), 'projects-scolaire-list');
-    renderCards(projects.filter(p => (p.category || 'personnel').toLowerCase() !== 'scolaire'), 'projects-personnel-list');
-}
-
-/* ───────────────────────────────────────────────
    Cards
 ─────────────────────────────────────────────── */
 const writeups = [
-    { title: "TryHackMe CTF Write Ups", descKey: "writeup-desc-thm", url: "write-ups/TryHackMe%20CTF%20Write%20Ups/index.html" },
-    { title: "YesWeHack Write Ups", descKey: "writeup-desc-ywh", url: "write-ups/YesWeHack%20Write%20Ups/index.html" }
+    { title: "TryHackMe CTF Write Ups", desc: "Collection de solutions et walkthroughs TryHackMe CTF.", url: "write-ups/TryHackMe%20CTF%20Write%20Ups/index.html" },
+    { title: "YesWeHack Write Ups", desc: "Rapports et découvertes de bug bounty sur YesWeHack.", url: "write-ups/YesWeHack%20Write%20Ups/index.html" }
 ];
 
 const projects = [];
 
-
-
 function renderCards(data, containerId) {
     const container = document.getElementById(containerId);
     if (!container) return;
-    const lang = getCurrentLang();
-    const t = translations[lang];
     container.innerHTML = '';
     data.forEach(item => {
         const li = document.createElement('li');
@@ -161,17 +32,10 @@ function renderCards(data, containerId) {
             }
         });
 
-        // Use direct description for editor items, translation key for hardcoded ones
-        const desc = item.descKey === '__editor__'
-            ? (item.descDirect || '')
-            : (t[item.descKey] || '');
-
-        const descAttr = item.descKey === '__editor__' ? '' : `data-i18n="${item.descKey}"`;
-
         li.innerHTML = `
             <div class="card-content">
                 <div class="card-title">${item.title}</div>
-                <div class="card-desc" ${descAttr}>${desc}</div>
+                <div class="card-desc">${item.desc || ''}</div>
             </div>
         `;
         container.appendChild(li);
@@ -222,16 +86,9 @@ function initContactCards() {
    Init
 ─────────────────────────────────────────────── */
 document.addEventListener('DOMContentLoaded', () => {
-    initTheme();
-    applyLanguage(getCurrentLang());
     renderCards(writeups, 'writeups-list');
-    
-    const scolaireProjects = projects.filter(p => (p.category || 'personnel').toLowerCase() === 'scolaire');
-    const personnelProjects = projects.filter(p => (p.category || 'personnel').toLowerCase() !== 'scolaire');
-    
-    renderCards(scolaireProjects, 'projects-scolaire-list');
-    renderCards(personnelProjects, 'projects-personnel-list');
-    
+    renderCards(projects, 'projects-scolaire-list');
+    renderCards(projects, 'projects-personnel-list');
     initHamburger();
     initContactCards();
 });
