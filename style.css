@@ -500,6 +500,33 @@ footer {
     margin-bottom: 1rem;
 }
 
+/* Competence groups (portfolio) */
+.competence-group {
+    margin-bottom: 1.5rem;
+    padding: 1rem 1.25rem;
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--card-radius);
+}
+
+.competence-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.25rem;
+}
+
+.competence-desc {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.75rem;
+    line-height: 1.5;
+}
+
+.competence-group .writeup-list {
+    margin-top: 0.5rem;
+}
+
 /* Status badges */
 .status-badge {
     display: inline-flex;

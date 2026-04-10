@@ -61,9 +61,36 @@
                 <h2 class="section-title">Portfolio &amp; Projets</h2>
                 
                 <h3 class="section-subtitle" style="margin-top: 1rem;">Scolaire</h3>
-                <ul id="projects-scolaire-list" class="writeup-list" style="margin-bottom: 2rem;"></ul>
 
-                <h3 class="section-subtitle">Personnel</h3>
+                <div id="scolaire-competences">
+                    <div class="competence-group" data-competence="administrer">
+                        <h4 class="competence-title">🖥️ Administrer</h4>
+                        <p class="competence-desc">Gestion et administration des systèmes d'exploitation et des infrastructures réseau</p>
+                        <ul class="writeup-list"></ul>
+                    </div>
+                    <div class="competence-group" data-competence="connecter">
+                        <h4 class="competence-title">🌐 Connecter</h4>
+                        <p class="competence-desc">Conception, mise en place et maintenance des interconnexions et infrastructures réseau</p>
+                        <ul class="writeup-list"></ul>
+                    </div>
+                    <div class="competence-group" data-competence="programmer">
+                        <h4 class="competence-title">💻 Programmer</h4>
+                        <p class="competence-desc">Développement d'applications et scripts pour l'automatisation et la gestion réseau</p>
+                        <ul class="writeup-list"></ul>
+                    </div>
+                    <div class="competence-group" data-competence="securiser">
+                        <h4 class="competence-title">🔒 Sécuriser</h4>
+                        <p class="competence-desc">Mise en place de solutions de sécurité, protection des systèmes et analyse des vulnérabilités</p>
+                        <ul class="writeup-list"></ul>
+                    </div>
+                    <div class="competence-group" data-competence="surveiller">
+                        <h4 class="competence-title">🔍 Surveiller</h4>
+                        <p class="competence-desc">Monitoring des réseaux, supervision des systèmes et gestion des alertes</p>
+                        <ul class="writeup-list"></ul>
+                    </div>
+                </div>
+
+                <h3 class="section-subtitle" style="margin-top: 2rem;">Personnel</h3>
                 <ul id="projects-personnel-list" class="writeup-list"></ul>
             </section>
         </main>
@@ -71,54 +98,67 @@
 
     <script src="script.js"></script>
     <script>
-        /* Also load projects from projects/scolaire/articles.json and projects/personnel/articles.json */
         (function () {
-            Promise.all([
-                fetch('projects/scolaire/articles.json').then(r => r.ok ? r.json() : []).catch(() => []),
-                fetch('projects/personnel/articles.json').then(r => r.ok ? r.json() : []).catch(() => [])
-            ]).then(([scolaireArticles, personnelArticles]) => {
-                const listScolaire = document.getElementById('projects-scolaire-list');
-                const listPersonnel = document.getElementById('projects-personnel-list');
-                
-                const processArticles = (articles, defaultCategory) => {
-                    if (!articles || articles.length === 0) return;
-                    articles.forEach(a => {
-                        const li = document.createElement('li');
-                        li.className = 'writeup-card';
-                        li.setAttribute('role', 'link');
-                        li.setAttribute('tabindex', '0');
-                        // Determine category
-                        const category = (a.category || defaultCategory).toLowerCase() === 'scolaire' ? 'scolaire' : 'personnel';
-                        // Build the article-viewer URL using the .md file
-                        const dirPath = category === 'scolaire' ? 'projects/scolaire/' : 'projects/personnel/';
-                        const fileName = a.file || (a.slug + '.md');
-                        const articleUrl = 'article-viewer.html?path=' + encodeURIComponent(dirPath + fileName);
-                        li.addEventListener('click', () => {
-                            window.location.href = articleUrl;
-                        });
-                        li.addEventListener('keydown', e => {
-                            if (e.key === 'Enter' || e.key === ' ') {
-                                e.preventDefault();
-                                window.location.href = articleUrl;
-                            }
-                        });
-                        li.innerHTML = `
-                            <div class="card-content">
-                                <div class="card-title">${a.title}</div>
-                                <div class="card-desc">${a.desc || ''}</div>
-                            </div>
-                        `;
-                        if (category === 'scolaire') {
-                            listScolaire.appendChild(li);
-                        } else {
-                            listPersonnel.appendChild(li);
-                        }
-                    });
-                };
+            const COMPETENCES = ['administrer', 'connecter', 'programmer', 'securiser', 'surveiller'];
 
-                processArticles(scolaireArticles, 'scolaire');
-                processArticles(personnelArticles, 'personnel');
-            });
+            function createCard(article, dirPath) {
+                const li = document.createElement('li');
+                li.className = 'writeup-card';
+                li.setAttribute('role', 'link');
+                li.setAttribute('tabindex', '0');
+                const fileName = article.file || (article.slug + '.md');
+                const articleUrl = 'article-viewer.html?path=' + encodeURIComponent(dirPath + fileName);
+                li.addEventListener('click', () => { window.location.href = articleUrl; });
+                li.addEventListener('keydown', e => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        window.location.href = articleUrl;
+                    }
+                });
+                li.innerHTML = `
+                    <div class="card-content">
+                        <div class="card-title">${article.title}</div>
+                        <div class="card-desc">${article.desc || ''}</div>
+                    </div>
+                `;
+                return li;
+            }
+
+            // Charger les 5 compétences scolaires
+            const competencePromises = COMPETENCES.map(comp =>
+                fetch(`projects/scolaire/${comp}/articles.json`)
+                    .then(r => r.ok ? r.json() : [])
+                    .catch(() => [])
+                    .then(articles => ({ comp, articles }))
+            );
+
+            // Charger les projets personnels
+            const personnelPromise = fetch('projects/personnel/articles.json')
+                .then(r => r.ok ? r.json() : [])
+                .catch(() => []);
+
+            Promise.all([Promise.all(competencePromises), personnelPromise])
+                .then(([competenceResults, personnelArticles]) => {
+                    // Remplir les compétences scolaires
+                    competenceResults.forEach(({ comp, articles }) => {
+                        const group = document.querySelector(`[data-competence="${comp}"]`);
+                        if (!group) return;
+                        const list = group.querySelector('.writeup-list');
+                        if (articles.length === 0) {
+                            group.style.display = 'none';
+                            return;
+                        }
+                        articles.forEach(a => {
+                            list.appendChild(createCard(a, `projects/scolaire/${comp}/`));
+                        });
+                    });
+
+                    // Remplir les projets personnels
+                    const listPersonnel = document.getElementById('projects-personnel-list');
+                    personnelArticles.forEach(a => {
+                        listPersonnel.appendChild(createCard(a, 'projects/personnel/'));
+                    });
+                });
         })();
     </script>
 </body>

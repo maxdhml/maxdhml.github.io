@@ -18,7 +18,11 @@ const SCAN_DIRS = [
     'write-ups/TryHackMe CTF Write Ups',
     'write-ups/YesWeHack Write Ups',
     'projects/personnel',
-    'projects/scolaire',
+    'projects/scolaire/administrer',
+    'projects/scolaire/connecter',
+    'projects/scolaire/programmer',
+    'projects/scolaire/securiser',
+    'projects/scolaire/surveiller',
 ];
 
 /**
