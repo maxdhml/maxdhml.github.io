@@ -527,28 +527,29 @@ footer {
     margin-top: 0.5rem;
 }
 
-/* "Voir les AC associés" link */
+/* "Voir les AC associés" button */
 .ac-link {
     display: inline-flex;
     align-items: center;
     gap: 0.35rem;
     font-size: 0.8rem;
     font-weight: 600;
-    color: var(--accent);
-    padding: 0.4rem 0.75rem;
-    background-color: rgba(59, 130, 246, 0.06);
-    border: 1px solid rgba(59, 130, 246, 0.15);
+    color: #fff;
+    padding: 0.5rem 1rem;
+    background-color: var(--accent);
+    border: none;
     border-radius: 8px;
     margin-bottom: 0.75rem;
-    transition: background-color var(--transition), border-color var(--transition), transform var(--transition);
+    transition: background-color var(--transition), transform var(--transition), box-shadow var(--transition);
     text-decoration: none;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
 }
 
 .ac-link:hover {
-    background-color: rgba(59, 130, 246, 0.12);
-    border-color: rgba(59, 130, 246, 0.3);
-    transform: translateX(2px);
-    color: var(--accent);
+    background-color: #2563eb;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+    color: #fff;
 }
 
 /* AC (Apprentissage Critique) tags */
