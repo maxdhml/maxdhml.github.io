@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="maxdhml — Apprentissages Critiques du BUT Réseaux & Télécommunications.">
+    <title>maxdhml | Apprentissages Critiques</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="editor.css">
+    <!-- Highlight.js for code blocks -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/atom-one-dark.min.css">
+    <style>
+        /* ─── AC Viewer specific styles ─── */
+        .ac-page-header {
+            margin-bottom: 2rem;
+        }
+
+        .ac-page-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .ac-page-subtitle {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .ac-back {
+            margin-bottom: 1.5rem;
+        }
+
+        .ac-back a {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: color var(--transition);
+        }
+
+        .ac-back a:hover {
+            color: var(--accent);
+        }
+
+        /* AC Card */
+        .ac-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--card-radius);
+            margin-bottom: 1rem;
+            overflow: hidden;
+            transition: border-color var(--transition);
+        }
+
+        .ac-card:hover {
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .ac-card.is-open {
+            border-color: rgba(59, 130, 246, 0.3);
+        }
+
+        /* AC Card Header (clickable) */
+        .ac-card-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 1.25rem;
+            cursor: pointer;
+            transition: background-color var(--transition);
+            user-select: none;
+        }
+
+        .ac-card-header:hover {
+            background-color: var(--bg-card-hover);
+        }
+
+        .ac-card-code {
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: var(--accent);
+            background-color: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            padding: 0.25rem 0.6rem;
+            border-radius: 6px;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .ac-card-title {
+            font-size: 0.88rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            flex: 1;
+            line-height: 1.4;
+        }
+
+        .ac-card-chevron {
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            transition: transform 0.25s ease;
+            flex-shrink: 0;
+        }
+
+        .ac-card.is-open .ac-card-chevron {
+            transform: rotate(90deg);
+        }
+
+        /* AC Card Body (expandable) */
+        .ac-card-body {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.35s ease;
+        }
+
+        .ac-card.is-open .ac-card-body {
+            max-height: 5000px;
+        }
+
+        .ac-card-content {
+            padding: 0 1.25rem 1.25rem;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        /* Subsection tabs */
+        .ac-sections {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            margin-top: 1rem;
+        }
+
+        .ac-section {
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            overflow: hidden;
+        }
+
+        .ac-section-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.65rem 1rem;
+            cursor: pointer;
+            background-color: var(--bg-overlay-light);
+            transition: background-color var(--transition);
+            user-select: none;
+        }
+
+        .ac-section-header:hover {
+            background-color: var(--bg-overlay-medium);
+        }
+
+        .ac-section-icon {
+            font-size: 0.85rem;
+        }
+
+        .ac-section-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .ac-section-chevron {
+            margin-left: auto;
+            color: var(--text-secondary);
+            font-size: 0.7rem;
+            transition: transform 0.2s ease;
+        }
+
+        .ac-section.is-open .ac-section-chevron {
+            transform: rotate(90deg);
+        }
+
+        .ac-section-body {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .ac-section.is-open .ac-section-body {
+            max-height: 3000px;
+        }
+
+        .ac-section-content {
+            padding: 0.75rem 1rem;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .ac-section-content .article-content {
+            color: var(--text-secondary);
+        }
+
+        .ac-section-content .article-content h1,
+        .ac-section-content .article-content h2,
+        .ac-section-content .article-content h3 {
+            color: var(--text-primary);
+        }
+
+        .ac-section-content .article-content img {
+            max-width: 100%;
+            border-radius: 8px;
+            margin: 0.5rem 0;
+        }
+
+        .ac-section-content em.placeholder {
+            color: #555;
+            font-style: italic;
+        }
+
+        .ac-edit-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            font-size: 0.72rem;
+            color: var(--text-secondary);
+            margin-top: 0.5rem;
+            padding: 0.2rem 0.5rem;
+            border: 1px solid var(--border-subtle);
+            border-radius: 4px;
+            text-decoration: none;
+            transition: color var(--transition), border-color var(--transition);
+        }
+
+        .ac-edit-link:hover {
+            color: var(--accent);
+            border-color: rgba(59, 130, 246, 0.3);
+        }
+
+        /* Fade-in animation for cards */
+        .ac-card {
+            opacity: 0;
+            animation: fadeInUp 0.4s ease forwards;
+        }
+
+        .ac-card:nth-child(1) { animation-delay: 0.05s; }
+        .ac-card:nth-child(2) { animation-delay: 0.1s; }
+        .ac-card:nth-child(3) { animation-delay: 0.15s; }
+        .ac-card:nth-child(4) { animation-delay: 0.2s; }
+        .ac-card:nth-child(5) { animation-delay: 0.25s; }
+        .ac-card:nth-child(6) { animation-delay: 0.3s; }
+    </style>
+</head>
+
+<body>
+    <div class="top-banner">
+        <span>🟢 En recherche d'alternance — <a href="CV Maxime DUHAMEL - Alternance.pdf"
+                download>voir mon CV</a></span>
+    </div>
+    <div class="container">
+        <aside class="sidebar">
+            <div class="sidebar-top">
+                <div class="profile-section">
+                    <div class="avatar"><img src="avatar.png" alt="maxdhml avatar"></div>
+                    <div>
+                        <div class="profile-name">maxdhml</div>
+                        <div class="profile-sub">Portfolio &amp; writeups</div>
+                    </div>
+                </div>
+
+                <button id="hamburger-btn" class="btn-hamburger" aria-label="Menu" aria-expanded="false">
+                    <span></span><span></span><span></span>
+                </button>
+            </div>
+
+            <nav id="nav-menu">
+                <ul class="nav-links">
+                    <li><a href="index.html">Write Up</a></li>
+                    <li><a href="portfolio.html" class="active">Portfolio</a></li>
+                    <li><a href="contact.html">Contacts</a></li>
+                    <li><a href="about.html">About</a></li>
+                </ul>
+            </nav>
+
+            <a href="CV Maxime DUHAMEL - Alternance.pdf" download class="btn-download">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+                CV
+            </a>
+
+            <footer><span>&copy; 2026 maxdhml</span></footer>
+        </aside>
+
+        <main class="main-content">
+            <div class="ac-back">
+                <a href="portfolio.html">&larr; Retour au Portfolio</a>
+            </div>
+
+            <div class="ac-page-header">
+                <h2 id="ac-page-title" class="ac-page-title"></h2>
+                <p id="ac-page-subtitle" class="ac-page-subtitle"></p>
+            </div>
+
+            <div id="ac-list"></div>
+        </main>
+    </div>
+
+    <!-- Marked.js for Markdown parsing -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <!-- Highlight.js for code syntax -->
+    <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/lib/highlight.min.js"></script>
+    <script src="script.js"></script>
+    <script>
+        // ─── AC Data ───
+        const AC_DATA = {
+            administrer: {
+                emoji: '🖥️',
+                title: 'Administrer',
+                subtitle: 'BC1 — Administrer les réseaux et l\'Internet',
+                acs: [
+                    { code: 'AC11.01', file: 'ac11.01', title: 'Maîtriser les lois fondamentales de l\'électricité afin d\'intervenir sur des équipements de réseaux et télécommunications' },
+                    { code: 'AC11.02', file: 'ac11.02', title: 'Comprendre l\'architecture et les fondements des systèmes numériques, les principes du codage de l\'information, des communications et de l\'Internet' },
+                    { code: 'AC11.03', file: 'ac11.03', title: 'Configurer les fonctions de base du réseau local' },
+                    { code: 'AC11.04', file: 'ac11.04', title: 'Maîtriser les rôles et les principes fondamentaux des systèmes d\'exploitation afin d\'interagir avec ceux-ci pour la configuration et l\'administration des réseaux et services fournis' },
+                    { code: 'AC11.05', file: 'ac11.05', title: 'Identifier les dysfonctionnements du réseau local et savoir les signaler' },
+                    { code: 'AC11.06', file: 'ac11.06', title: 'Installer un poste client, expliquer la procédure mise en place' },
+                ]
+            },
+            connecter: {
+                emoji: '🌐',
+                title: 'Connecter',
+                subtitle: 'BC2 — Connecter les entreprises et les usagers',
+                acs: [
+                    { code: 'AC12.01', file: 'ac12.01', title: 'Mesurer, analyser et commenter les signaux' },
+                    { code: 'AC12.02', file: 'ac12.02', title: 'Caractériser des systèmes de transmissions élémentaires et découvrir la modélisation mathématique de leur fonctionnement' },
+                    { code: 'AC12.03', file: 'ac12.03', title: 'Déployer des supports de transmission' },
+                    { code: 'AC12.04', file: 'ac12.04', title: 'Connecter les systèmes de ToIP' },
+                    { code: 'AC12.05', file: 'ac12.05', title: 'Communiquer avec un tiers (client, collaborateur...) et adapter son discours et sa langue à son interlocuteur' },
+                ]
+            },
+            programmer: {
+                emoji: '💻',
+                title: 'Programmer',
+                subtitle: 'BC3 — Créer des outils et applications informatiques pour les R&T',
+                acs: [
+                    { code: 'AC13.01', file: 'ac13.01', title: 'Utiliser un système informatique et ses outils' },
+                    { code: 'AC13.02', file: 'ac13.02', title: 'Lire, exécuter, corriger et modifier un programme' },
+                    { code: 'AC13.03', file: 'ac13.03', title: 'Traduire un algorithme, dans un langage et pour un environnement donné' },
+                    { code: 'AC13.04', file: 'ac13.04', title: 'Connaître l\'architecture et les technologies d\'un site Web' },
+                    { code: 'AC13.05', file: 'ac13.05', title: 'Choisir les mécanismes de gestion de données adaptés au développement de l\'outil et argumenter ses choix' },
+                    { code: 'AC13.06', file: 'ac13.06', title: 'S\'intégrer dans un environnement propice au développement et au travail collaboratif' },
+                ]
+            }
+        };
+
+        const SECTIONS = [
+            { key: 'quoi', heading: 'Ce que j\'ai fait', icon: '📝', label: 'Ce que j\'ai fait' },
+            { key: 'comment', heading: 'Comment', icon: '🔧', label: 'Comment' },
+            { key: 'pourquoi', heading: 'Pourquoi', icon: '💡', label: 'Pourquoi' },
+            { key: 'preuve', heading: 'Preuve', icon: '📎', label: 'Preuve' },
+        ];
+
+        /**
+         * Parse a markdown string into sections based on ## headings.
+         * Returns an object: { 'Ce que j\'ai fait': 'content...', 'Comment': '...' }
+         */
+        function parseSections(mdContent) {
+            const result = {};
+            const lines = mdContent.split('\n');
+            let currentSection = null;
+            let currentContent = [];
+
+            for (const line of lines) {
+                const match = line.match(/^##\s+(.+)/);
+                if (match) {
+                    if (currentSection) {
+                        result[currentSection] = currentContent.join('\n').trim();
+                    }
+                    currentSection = match[1].trim();
+                    currentContent = [];
+                } else if (currentSection) {
+                    currentContent.push(line);
+                }
+            }
+            if (currentSection) {
+                result[currentSection] = currentContent.join('\n').trim();
+            }
+            return result;
+        }
+
+        // ─── Init ───
+        (function () {
+            const params = new URLSearchParams(window.location.search);
+            const bc = params.get('bc');
+            const data = AC_DATA[bc];
+
+            if (!data) {
+                document.getElementById('ac-page-title').textContent = 'Compétence non trouvée';
+                document.getElementById('ac-page-subtitle').textContent = 'Vérifiez l\'URL et réessayez.';
+                return;
+            }
+
+            // Configure marked
+            marked.setOptions({ breaks: true, gfm: true });
+
+            // Set page info
+            document.title = `maxdhml | AC — ${data.title}`;
+            document.getElementById('ac-page-title').textContent = `${data.emoji} ${data.title}`;
+            document.getElementById('ac-page-subtitle').textContent = data.subtitle;
+
+            // Render AC cards
+            const container = document.getElementById('ac-list');
+            data.acs.forEach((ac, idx) => {
+                const card = document.createElement('div');
+                card.className = 'ac-card';
+                card.dataset.acFile = ac.file;
+                card.dataset.loaded = 'false';
+
+                const mdFilePath = `projects/scolaire/${bc}/ac/${ac.file}.md`;
+
+                card.innerHTML = `
+                    <div class="ac-card-header" data-ac-toggle="${idx}">
+                        <span class="ac-card-code">${ac.code}</span>
+                        <span class="ac-card-title">${ac.title}</span>
+                        <span class="ac-card-chevron">▶</span>
+                    </div>
+                    <div class="ac-card-body">
+                        <div class="ac-card-content">
+                            <div class="ac-sections">
+                                ${SECTIONS.map(s => `
+                                    <div class="ac-section" data-section="${s.key}">
+                                        <div class="ac-section-header">
+                                            <span class="ac-section-icon">${s.icon}</span>
+                                            <span class="ac-section-label">${s.label}</span>
+                                            <span class="ac-section-chevron">▶</span>
+                                        </div>
+                                        <div class="ac-section-body">
+                                            <div class="ac-section-content" data-heading="${s.heading}">
+                                                <em class="placeholder">Chargement…</em>
+                                            </div>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                            <a href="${mdFilePath}" class="ac-edit-link" title="Chemin du fichier Markdown">📂 ${mdFilePath}</a>
+                        </div>
+                    </div>
+                `;
+
+                container.appendChild(card);
+            });
+
+            // ─── Toggle & lazy-load logic ───
+            document.querySelectorAll('.ac-card-header').forEach(header => {
+                header.addEventListener('click', () => {
+                    const card = header.closest('.ac-card');
+                    card.classList.toggle('is-open');
+
+                    // Lazy load markdown content on first open
+                    if (card.classList.contains('is-open') && card.dataset.loaded === 'false') {
+                        card.dataset.loaded = 'true';
+                        const acFile = card.dataset.acFile;
+                        const mdPath = `projects/scolaire/${bc}/ac/${acFile}.md`;
+
+                        fetch(encodeURI(mdPath))
+                            .then(r => r.ok ? r.text() : '')
+                            .catch(() => '')
+                            .then(md => {
+                                const sections = parseSections(md);
+                                const sectionEls = card.querySelectorAll('.ac-section-content');
+                                sectionEls.forEach(el => {
+                                    const heading = el.dataset.heading;
+                                    const content = sections[heading] || '';
+                                    if (content && content !== 'Contenu à compléter...') {
+                                        const html = marked.parse(content);
+                                        el.innerHTML = `<div class="article-content">${html}</div>`;
+                                        // Highlight code blocks
+                                        if (typeof hljs !== 'undefined') {
+                                            el.querySelectorAll('pre code').forEach(block => {
+                                                hljs.highlightElement(block);
+                                            });
+                                        }
+                                    } else {
+                                        el.innerHTML = '<em class="placeholder">Contenu à compléter…</em>';
+                                    }
+                                });
+                            });
+                    }
+                });
+            });
+
+            // Sub-section toggle
+            document.querySelectorAll('.ac-section-header').forEach(header => {
+                header.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const section = header.closest('.ac-section');
+                    section.classList.toggle('is-open');
+                });
+            });
+        })();
+    </script>
+</body>
+
+</html>
