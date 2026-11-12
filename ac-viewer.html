@@ -117,7 +117,7 @@
         }
 
         .ac-card.is-open .ac-card-body {
-            max-height: 5000px;
+            max-height: 12000px;
         }
 
         .ac-card-content {
@@ -183,7 +183,7 @@
         }
 
         .ac-section.is-open .ac-section-body {
-            max-height: 3000px;
+            max-height: 6000px;
         }
 
         .ac-section-content {
@@ -246,6 +246,78 @@
         .ac-card:nth-child(4) { animation-delay: 0.2s; }
         .ac-card:nth-child(5) { animation-delay: 0.25s; }
         .ac-card:nth-child(6) { animation-delay: 0.3s; }
+
+        /* Level grouping & filters */
+        .ac-level-filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .ac-filter-btn {
+            background-color: var(--bg-card);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-subtle);
+            border-radius: 999px;
+            padding: 0.35rem 0.9rem;
+            font-size: 0.78rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition);
+        }
+
+        .ac-filter-btn:hover {
+            color: var(--text-primary);
+            border-color: rgba(59, 130, 246, 0.35);
+        }
+
+        .ac-filter-btn.is-active {
+            background-color: rgba(59, 130, 246, 0.15);
+            color: var(--accent);
+            border-color: rgba(59, 130, 246, 0.45);
+        }
+
+        .ac-level-group {
+            margin-bottom: 1.75rem;
+        }
+
+        .ac-level-group.is-hidden {
+            display: none;
+        }
+
+        .ac-level-header {
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+            margin: 1.25rem 0 0.75rem;
+            padding-bottom: 0.45rem;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .ac-level-badge {
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            padding: 0.2rem 0.55rem;
+            border-radius: 6px;
+            background-color: rgba(59, 130, 246, 0.12);
+            color: var(--accent);
+            border: 1px solid rgba(59, 130, 246, 0.25);
+        }
+
+        .ac-level-badge.is-but2 {
+            background-color: rgba(34, 197, 94, 0.12);
+            color: #4ade80;
+            border-color: rgba(34, 197, 94, 0.25);
+        }
+
+        .ac-level-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
     </style>
 </head>
 
@@ -300,6 +372,7 @@
             <div class="ac-page-header">
                 <h2 id="ac-page-title" class="ac-page-title"></h2>
                 <p id="ac-page-subtitle" class="ac-page-subtitle"></p>
+                <div id="ac-level-filters" class="ac-level-filters" hidden></div>
             </div>
 
             <div id="ac-list"></div>
@@ -318,38 +391,140 @@
                 emoji: '🖥️',
                 title: 'Administrer',
                 subtitle: 'BC1 — Administrer les réseaux et l\'Internet',
-                acs: [
-                    { code: 'AC11.01', file: 'ac11.01', title: 'Maîtriser les lois fondamentales de l\'électricité afin d\'intervenir sur des équipements de réseaux et télécommunications' },
-                    { code: 'AC11.02', file: 'ac11.02', title: 'Comprendre l\'architecture et les fondements des systèmes numériques, les principes du codage de l\'information, des communications et de l\'Internet' },
-                    { code: 'AC11.03', file: 'ac11.03', title: 'Configurer les fonctions de base du réseau local' },
-                    { code: 'AC11.04', file: 'ac11.04', title: 'Maîtriser les rôles et les principes fondamentaux des systèmes d\'exploitation afin d\'interagir avec ceux-ci pour la configuration et l\'administration des réseaux et services fournis' },
-                    { code: 'AC11.05', file: 'ac11.05', title: 'Identifier les dysfonctionnements du réseau local et savoir les signaler' },
-                    { code: 'AC11.06', file: 'ac11.06', title: 'Installer un poste client, expliquer la procédure mise en place' },
+                levels: [
+                    {
+                        id: 'but1',
+                        badge: 'BUT1 · Niveau 1',
+                        title: 'Assister l\'administrateur du réseau',
+                        isBut2: false,
+                        acs: [
+                            { code: 'AC11.01', file: 'ac11.01', title: 'Maîtriser les lois fondamentales de l\'électricité afin d\'intervenir sur des équipements de réseaux et télécommunications' },
+                            { code: 'AC11.02', file: 'ac11.02', title: 'Comprendre l\'architecture et les fondements des systèmes numériques, les principes du codage de l\'information, des communications et de l\'Internet' },
+                            { code: 'AC11.03', file: 'ac11.03', title: 'Configurer les fonctions de base du réseau local' },
+                            { code: 'AC11.04', file: 'ac11.04', title: 'Maîtriser les rôles et les principes fondamentaux des systèmes d\'exploitation afin d\'interagir avec ceux-ci pour la configuration et l\'administration des réseaux et services fournis' },
+                            { code: 'AC11.05', file: 'ac11.05', title: 'Identifier les dysfonctionnements du réseau local et savoir les signaler' },
+                            { code: 'AC11.06', file: 'ac11.06', title: 'Installer un poste client, expliquer la procédure mise en place' },
+                        ]
+                    },
+                    {
+                        id: 'but2',
+                        badge: 'BUT2 · Niveau 2',
+                        title: 'Administrer un réseau',
+                        isBut2: true,
+                        acs: [
+                            { code: 'AC21.01', file: 'ac21.01', title: 'Configurer et dépanner le routage dynamique dans un réseau' },
+                            { code: 'AC21.02', file: 'ac21.02', title: 'Configurer et expliquer une politique simple de QoS et les fonctions de base de la sécurité d\'un réseau' },
+                            { code: 'AC21.03', file: 'ac21.03', title: 'Déployer des postes clients et des solutions virtualisées adaptées à une situation donnée' },
+                            { code: 'AC21.04', file: 'ac21.04', title: 'Déployer des services réseaux avancés' },
+                            { code: 'AC21.05', file: 'ac21.05', title: 'Identifier les réseaux opérateurs et l\'architecture d\'Internet' },
+                            { code: 'AC21.06', file: 'ac21.06', title: 'Travailler en équipe pour développer ses compétences professionnelles' },
+                        ]
+                    }
                 ]
             },
             connecter: {
                 emoji: '🌐',
                 title: 'Connecter',
                 subtitle: 'BC2 — Connecter les entreprises et les usagers',
-                acs: [
-                    { code: 'AC12.01', file: 'ac12.01', title: 'Mesurer, analyser et commenter les signaux' },
-                    { code: 'AC12.02', file: 'ac12.02', title: 'Caractériser des systèmes de transmissions élémentaires et découvrir la modélisation mathématique de leur fonctionnement' },
-                    { code: 'AC12.03', file: 'ac12.03', title: 'Déployer des supports de transmission' },
-                    { code: 'AC12.04', file: 'ac12.04', title: 'Connecter les systèmes de ToIP' },
-                    { code: 'AC12.05', file: 'ac12.05', title: 'Communiquer avec un tiers (client, collaborateur...) et adapter son discours et sa langue à son interlocuteur' },
+                levels: [
+                    {
+                        id: 'but1',
+                        badge: 'BUT1 · Niveau 1',
+                        title: 'Découvrir les transmissions et la ToIP',
+                        isBut2: false,
+                        acs: [
+                            { code: 'AC12.01', file: 'ac12.01', title: 'Mesurer, analyser et commenter les signaux' },
+                            { code: 'AC12.02', file: 'ac12.02', title: 'Caractériser des systèmes de transmissions élémentaires et découvrir la modélisation mathématique de leur fonctionnement' },
+                            { code: 'AC12.03', file: 'ac12.03', title: 'Déployer des supports de transmission' },
+                            { code: 'AC12.04', file: 'ac12.04', title: 'Connecter les systèmes de ToIP' },
+                            { code: 'AC12.05', file: 'ac12.05', title: 'Communiquer avec un tiers (client, collaborateur...) et adapter son discours et sa langue à son interlocuteur' },
+                        ]
+                    },
+                    {
+                        id: 'but2',
+                        badge: 'BUT2 · Niveau 2',
+                        title: 'Maîtriser les différentes composantes des solutions de connexion des entreprises et des usagers',
+                        isBut2: true,
+                        acs: [
+                            { code: 'AC22.01', file: 'ac22.01', title: 'Déployer et caractériser des systèmes de transmissions complexes' },
+                            { code: 'AC22.02', file: 'ac22.02', title: 'Mettre en place un accès distant sécurisé' },
+                            { code: 'AC22.03', file: 'ac22.03', title: 'Mettre en place une connexion multi-site via un réseau opérateur' },
+                            { code: 'AC22.04', file: 'ac22.04', title: 'Déployer des réseaux d\'accès des opérateurs' },
+                            { code: 'AC22.05', file: 'ac22.05', title: 'Capacité à questionner un cahier des charges RT' },
+                        ]
+                    }
                 ]
             },
             programmer: {
                 emoji: '💻',
                 title: 'Programmer',
                 subtitle: 'BC3 — Créer des outils et applications informatiques pour les R&T',
-                acs: [
-                    { code: 'AC13.01', file: 'ac13.01', title: 'Utiliser un système informatique et ses outils' },
-                    { code: 'AC13.02', file: 'ac13.02', title: 'Lire, exécuter, corriger et modifier un programme' },
-                    { code: 'AC13.03', file: 'ac13.03', title: 'Traduire un algorithme, dans un langage et pour un environnement donné' },
-                    { code: 'AC13.04', file: 'ac13.04', title: 'Connaître l\'architecture et les technologies d\'un site Web' },
-                    { code: 'AC13.05', file: 'ac13.05', title: 'Choisir les mécanismes de gestion de données adaptés au développement de l\'outil et argumenter ses choix' },
-                    { code: 'AC13.06', file: 'ac13.06', title: 'S\'intégrer dans un environnement propice au développement et au travail collaboratif' },
+                levels: [
+                    {
+                        id: 'but1',
+                        badge: 'BUT1 · Niveau 1',
+                        title: 'S\'intégrer dans un service informatique',
+                        isBut2: false,
+                        acs: [
+                            { code: 'AC13.01', file: 'ac13.01', title: 'Utiliser un système informatique et ses outils' },
+                            { code: 'AC13.02', file: 'ac13.02', title: 'Lire, exécuter, corriger et modifier un programme' },
+                            { code: 'AC13.03', file: 'ac13.03', title: 'Traduire un algorithme, dans un langage et pour un environnement donné' },
+                            { code: 'AC13.04', file: 'ac13.04', title: 'Connaître l\'architecture et les technologies d\'un site Web' },
+                            { code: 'AC13.05', file: 'ac13.05', title: 'Choisir les mécanismes de gestion de données adaptés au développement de l\'outil et argumenter ses choix' },
+                            { code: 'AC13.06', file: 'ac13.06', title: 'S\'intégrer dans un environnement propice au développement et au travail collaboratif' },
+                        ]
+                    },
+                    {
+                        id: 'but2',
+                        badge: 'BUT2 · Niveau 2',
+                        title: 'Développer une application R&T',
+                        isBut2: true,
+                        acs: [
+                            { code: 'AC23.01', file: 'ac23.01', title: 'Automatiser l\'administration système avec des scripts' },
+                            { code: 'AC23.02', file: 'ac23.02', title: 'Développer une application à partir d\'un cahier des charges donné, pour le Web ou les périphériques mobiles' },
+                            { code: 'AC23.03', file: 'ac23.03', title: 'Utiliser un protocole réseau pour programmer une application client/serveur' },
+                            { code: 'AC23.04', file: 'ac23.04', title: 'Installer, administrer un système de gestion de données' },
+                            { code: 'AC23.05', file: 'ac23.05', title: 'Accéder à un ensemble de données depuis une application et/ou un site web' },
+                        ]
+                    }
+                ]
+            },
+            securiser: {
+                emoji: '🔒',
+                title: 'Sécuriser',
+                subtitle: 'BC4 — Administrer un système d\'information sécurisé (Parcours Cybersécurité)',
+                levels: [
+                    {
+                        id: 'but2',
+                        badge: 'BUT2 · Niveau 1',
+                        title: 'Sensibiliser aux vulnérabilités d\'un système d\'information et aux remédiations possibles',
+                        isBut2: true,
+                        acs: [
+                            { code: 'AC24.01Cyber', file: 'ac24.01cyber', title: 'Connaître et utiliser les bonnes pratiques et les recommandations de cybersécurité' },
+                            { code: 'AC24.02Cyber', file: 'ac24.02cyber', title: 'Mettre en œuvre les outils fondamentaux de sécurisation d\'une infrastructure du réseau' },
+                            { code: 'AC24.03Cyber', file: 'ac24.03cyber', title: 'Sécuriser les services' },
+                            { code: 'AC24.04Cyber', file: 'ac24.04cyber', title: 'Choisir les outils cryptographiques adaptés au besoin fonctionnel du système d\'information' },
+                            { code: 'AC24.05Cyber', file: 'ac24.05cyber', title: 'Connaître les différents types d\'attaque' },
+                            { code: 'AC24.06Cyber', file: 'ac24.06cyber', title: 'Comprendre des documents techniques en anglais' },
+                        ]
+                    }
+                ]
+            },
+            surveiller: {
+                emoji: '🔍',
+                title: 'Surveiller',
+                subtitle: 'BC5 — Surveiller un système d\'information sécurisé (Parcours Cybersécurité)',
+                levels: [
+                    {
+                        id: 'but2',
+                        badge: 'BUT2 · Niveau 1',
+                        title: 'Prendre en main les outils de surveillance et de test du système d\'information',
+                        isBut2: true,
+                        acs: [
+                            { code: 'AC25.01Cyber', file: 'ac25.01cyber', title: 'Administrer les protections contre les logiciels malveillants' },
+                            { code: 'AC25.02Cyber', file: 'ac25.02cyber', title: 'Prendre en main des outils de test de pénétration réseau/système' },
+                        ]
+                    }
                 ]
             }
         };
@@ -412,46 +587,88 @@
             document.getElementById('ac-page-title').textContent = `${data.emoji} ${data.title}`;
             document.getElementById('ac-page-subtitle').textContent = data.subtitle;
 
-            // Render AC cards
+            // Render level filters if multiple levels exist
+            const filtersEl = document.getElementById('ac-level-filters');
+            if (data.levels.length > 1) {
+                filtersEl.hidden = false;
+                filtersEl.innerHTML = `
+                    <button type="button" class="ac-filter-btn is-active" data-level-filter="all">Tout afficher</button>
+                    ${data.levels.map(lvl => `
+                        <button type="button" class="ac-filter-btn" data-level-filter="${lvl.id}">${lvl.badge}</button>
+                    `).join('')}
+                `;
+            }
+
+            // Render AC cards grouped by level
             const container = document.getElementById('ac-list');
-            data.acs.forEach((ac, idx) => {
-                const card = document.createElement('div');
-                card.className = 'ac-card';
-                card.dataset.acFile = ac.file;
-                card.dataset.loaded = 'false';
+            let globalIdx = 0;
 
-                const mdFilePath = `projects/scolaire/${bc}/ac/${ac.file}.md`;
+            data.levels.forEach(level => {
+                const group = document.createElement('div');
+                group.className = 'ac-level-group';
+                group.dataset.level = level.id;
 
-                card.innerHTML = `
-                    <div class="ac-card-header" data-ac-toggle="${idx}">
-                        <span class="ac-card-code">${ac.code}</span>
-                        <span class="ac-card-title">${ac.title}</span>
-                        <span class="ac-card-chevron">▶</span>
-                    </div>
-                    <div class="ac-card-body">
-                        <div class="ac-card-content">
-                            <div class="ac-sections">
-                                ${SECTIONS.map(s => `
-                                    <div class="ac-section" data-section="${s.key}">
-                                        <div class="ac-section-header">
-                                            <span class="ac-section-icon">${s.icon}</span>
-                                            <span class="ac-section-label">${s.label}</span>
-                                            <span class="ac-section-chevron">▶</span>
-                                        </div>
-                                        <div class="ac-section-body">
-                                            <div class="ac-section-content" data-heading="${s.heading}">
-                                                <em class="placeholder">Chargement…</em>
+                const header = document.createElement('div');
+                header.className = 'ac-level-header';
+                header.innerHTML = `
+                    <span class="ac-level-badge ${level.isBut2 ? 'is-but2' : ''}">${level.badge}</span>
+                    <span class="ac-level-title">${level.title}</span>
+                `;
+                group.appendChild(header);
+
+                level.acs.forEach(ac => {
+                    const card = document.createElement('div');
+                    card.className = 'ac-card';
+                    card.dataset.acFile = ac.file;
+                    card.dataset.loaded = 'false';
+
+                    const mdFilePath = `projects/scolaire/${bc}/ac/${ac.file}.md`;
+
+                    card.innerHTML = `
+                        <div class="ac-card-header" data-ac-toggle="${globalIdx++}">
+                            <span class="ac-card-code">${ac.code}</span>
+                            <span class="ac-card-title">${ac.title}</span>
+                            <span class="ac-card-chevron">▶</span>
+                        </div>
+                        <div class="ac-card-body">
+                            <div class="ac-card-content">
+                                <div class="ac-sections">
+                                    ${SECTIONS.map(s => `
+                                        <div class="ac-section" data-section="${s.key}">
+                                            <div class="ac-section-header">
+                                                <span class="ac-section-icon">${s.icon}</span>
+                                                <span class="ac-section-label">${s.label}</span>
+                                                <span class="ac-section-chevron">▶</span>
+                                            </div>
+                                            <div class="ac-section-body">
+                                                <div class="ac-section-content" data-heading="${s.heading}">
+                                                    <em class="placeholder">Chargement…</em>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                `).join('')}
+                                    `).join('')}
+                                </div>
+                                <a href="${mdFilePath}" class="ac-edit-link" title="Chemin du fichier Markdown">📂 ${mdFilePath}</a>
                             </div>
-                            <a href="${mdFilePath}" class="ac-edit-link" title="Chemin du fichier Markdown">📂 ${mdFilePath}</a>
                         </div>
-                    </div>
-                `;
+                    `;
 
-                container.appendChild(card);
+                    group.appendChild(card);
+                });
+
+                container.appendChild(group);
+            });
+
+            // Level filter logic
+            filtersEl.querySelectorAll('.ac-filter-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const target = btn.dataset.levelFilter;
+                    filtersEl.querySelectorAll('.ac-filter-btn').forEach(b => b.classList.remove('is-active'));
+                    btn.classList.add('is-active');
+                    container.querySelectorAll('.ac-level-group').forEach(g => {
+                        g.classList.toggle('is-hidden', target !== 'all' && g.dataset.level !== target);
+                    });
+                });
             });
 
             // ─── Toggle & lazy-load logic ───
